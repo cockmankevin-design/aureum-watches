@@ -8,7 +8,10 @@
 <meta name="theme-color" content="#F7F5F0" />
 <!-- Brand favicon (inline SVG — gold A monogram on ink) -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%23141414'/%3E%3Ctext%20x='16'%20y='23'%20font-family='Georgia,serif'%20font-size='21'%20fill='%23C8A24A'%20text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
-<!-- Social sharing (set absolute og:url + og:image after deploy) -->
+<!-- Social sharing -->
+<link rel="canonical" href="https://cockmankevin-design.github.io/aureum-watches/" />
+<meta property="og:url" content="https://cockmankevin-design.github.io/aureum-watches/" />
+<meta property="og:image" content="https://cockmankevin-design.github.io/aureum-watches/assets/watches/armitron-mop-white-wrist.jpg" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="AUREUM" />
 <meta property="og:title" content="AUREUM — Fine Timepieces for Men &amp; Women" />
@@ -16,6 +19,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="AUREUM — Fine Timepieces" />
 <meta name="twitter:description" content="Beautifully made watches for men and women. Made to be worn every day." />
+<meta name="twitter:image" content="https://cockmankevin-design.github.io/aureum-watches/assets/watches/armitron-mop-white-wrist.jpg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -246,6 +250,8 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .foot-col a:hover{color:var(--gold-line)}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;
   font-size:.74rem;letter-spacing:.06em;color:rgba(247,245,240,.5);flex-wrap:wrap;gap:16px}
+.foot-bottom a{color:rgba(247,245,240,.66);transition:.3s var(--ease)}
+.foot-bottom a:hover{color:var(--gold-line)}
 .pay{display:flex;gap:10px;align-items:center}
 .pay span{border:1px solid rgba(247,245,240,.2);padding:4px 9px;font-size:.6rem;letter-spacing:.1em;
   text-transform:uppercase;border-radius:3px}
@@ -608,14 +614,14 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
       </div>
       <div class="foot-col">
         <h4>Contact</h4>
-        <a href="mailto:concierge@aureum.example">concierge@aureum.example</a>
+        <a href="mailto:cockmankevin@gmail.com">cockmankevin@gmail.com</a>
         <a href="#/shipping-returns">Track an Order</a>
         <a href="#/about">FAQ</a>
         <a href="#/shipping-returns">Returns Portal</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span id="year"></span> AUREUM Fine Timepieces. All rights reserved.</span>
+      <span>© <span id="year"></span> AUREUM Fine Timepieces. All rights reserved. · <a href="#/privacy">Privacy Policy</a> · <a href="#/terms">Terms</a></span>
       <div class="pay"><span>Visa</span><span>Mastercard</span><span>Amex</span><span>PayPal</span><span>Apple&nbsp;Pay</span></div>
     </div>
   </div>
@@ -1550,7 +1556,7 @@ function viewPolicy(){
   return `<section class="page"><div class="wrap"><div class="prose">
     <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
     <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Shipping &amp; Returns</h1>
-    <p class="lede reveal">Everything you need to know before — and after — your order. Questions? <a href="mailto:concierge@aureum.example" style="border-bottom:1px solid">Reach our concierge</a>.</p>
+    <p class="lede reveal">Everything you need to know before — and after — your order. Questions? <a href="mailto:cockmankevin@gmail.com" style="border-bottom:1px solid">Reach our concierge</a>.</p>
     <div class="rule-gold reveal" style="margin:40px 0"></div>
     <h2 class="reveal">Shipping</h2>
     <ul>
@@ -1571,7 +1577,78 @@ function viewPolicy(){
       <li class="reveal">Every AUREUM timepiece is covered by a 2-year limited warranty on the movement and finish.</li>
       <li class="reveal">Battery replacement and routine wear are not covered, as is standard.</li>
     </ul>
-    <p class="reveal muted" style="margin-top:30px;font-size:.9rem">Note: This is placeholder policy copy for a demonstration storefront. Replace with your finalized legal policies before accepting real orders.</p>
+    <div style="text-align:center;margin-top:36px" class="reveal"><a href="#/shop" class="btn btn-ghost">Back to Shop</a></div>
+  </div></div></section>`;
+}
+
+function viewPrivacy(){
+  return `<section class="page"><div class="wrap"><div class="prose">
+    <span class="eyebrow reveal" style="display:block;text-align:center">Legal</span>
+    <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Privacy Policy</h1>
+    <p class="lede reveal">Last updated June 2026. We collect only what we need to fill your order — nothing more. Questions? <a href="mailto:cockmankevin@gmail.com" style="border-bottom:1px solid">Email us</a>.</p>
+    <div class="rule-gold reveal" style="margin:40px 0"></div>
+    <h2 class="reveal">What we collect</h2>
+    <ul>
+      <li class="reveal"><b>Order information.</b> When you check out we collect your name, email address, shipping address and payment details. Payment details are handled entirely by our payment processor — they never touch our servers.</li>
+      <li class="reveal"><b>Browser storage.</b> We use your browser's local storage to remember your shopping bag and whether you've seen our welcome offer. This data stays on your device. We do not use tracking cookies and we do not run third-party analytics.</li>
+      <li class="reveal"><b>Correspondence.</b> If you email us, we keep the exchange so we can help you with returns, warranty claims and follow-ups.</li>
+    </ul>
+    <h2 class="reveal">How we use it</h2>
+    <ul>
+      <li class="reveal">To process and ship your order, send order and tracking confirmations, and provide customer support.</li>
+      <li class="reveal">To handle returns, exchanges and warranty service.</li>
+      <li class="reveal">We do <b>not</b> sell, rent or trade your personal information to anyone.</li>
+    </ul>
+    <h2 class="reveal">Who we share it with</h2>
+    <ul>
+      <li class="reveal"><b>Payment processing.</b> Checkout is operated by our e-commerce and payment partners (such as Snipcart and its connected card processor), who handle your payment data under their own privacy policies.</li>
+      <li class="reveal"><b>Shipping carriers.</b> We share your name and address with the carrier delivering your order.</li>
+      <li class="reveal">We may disclose information if required by law.</li>
+    </ul>
+    <h2 class="reveal">Retention &amp; your rights</h2>
+    <ul>
+      <li class="reveal">We keep order records only as long as needed for warranty service, accounting and legal obligations.</li>
+      <li class="reveal">You may request a copy of the personal information we hold about you, or ask us to delete it, by emailing <a href="mailto:cockmankevin@gmail.com" style="border-bottom:1px solid">cockmankevin@gmail.com</a>. We'll respond within 30 days.</li>
+    </ul>
+    <h2 class="reveal">Children</h2>
+    <p class="reveal">Our store is not directed at children under 13 and we do not knowingly collect their information.</p>
+    <h2 class="reveal">Changes</h2>
+    <p class="reveal">If we change this policy, we'll update this page and revise the date above. Material changes will be noted prominently.</p>
+    <div style="text-align:center;margin-top:36px" class="reveal"><a href="#/shop" class="btn btn-ghost">Back to Shop</a></div>
+  </div></div></section>`;
+}
+
+function viewTerms(){
+  return `<section class="page"><div class="wrap"><div class="prose">
+    <span class="eyebrow reveal" style="display:block;text-align:center">Legal</span>
+    <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Terms &amp; Conditions</h1>
+    <p class="lede reveal">Last updated June 2026. By placing an order with AUREUM you agree to the terms below. Questions? <a href="mailto:cockmankevin@gmail.com" style="border-bottom:1px solid">Email us</a>.</p>
+    <div class="rule-gold reveal" style="margin:40px 0"></div>
+    <h2 class="reveal">Products &amp; pricing</h2>
+    <ul>
+      <li class="reveal">All prices are listed in US dollars. "Compare at" prices reflect the estimated retail value of comparable pieces and are shown for reference only.</li>
+      <li class="reveal">Prices, promotions and availability may change at any time without notice. In the rare event of an obvious pricing error, we may cancel and refund the affected order before it ships.</li>
+      <li class="reveal">Product photography and illustrations are representative; minor variations in dial, finish or strap may occur between production batches.</li>
+    </ul>
+    <h2 class="reveal">Orders &amp; payment</h2>
+    <ul>
+      <li class="reveal">An order is accepted when we email your order confirmation. We may decline or cancel orders we reasonably suspect are fraudulent.</li>
+      <li class="reveal">Payment is collected at checkout by our payment partners. Where required, applicable sales tax is added at checkout.</li>
+    </ul>
+    <h2 class="reveal">Shipping, returns &amp; warranty</h2>
+    <ul>
+      <li class="reveal">Orders are dispatched within 1–2 business days, with estimated delivery in 5–9 business days. Shipping is complimentary, insured and tracked.</li>
+      <li class="reveal">Unworn pieces in original packaging may be returned within 30 days. Every watch carries a 2-year limited warranty on movement and finish. Full details: <a href="#/shipping-returns" style="border-bottom:1px solid">Shipping &amp; Returns</a>.</li>
+      <li class="reveal">Risk of loss passes to you on delivery; please report lost or damaged shipments within 7 days so we can claim against shipping insurance and make it right.</li>
+    </ul>
+    <h2 class="reveal">Intellectual property</h2>
+    <p class="reveal">The AUREUM name, site design, photography and copy are our property and may not be reproduced without written permission. Third-party brand names appearing on genuine resold goods remain the property of their respective owners; AUREUM is not affiliated with or endorsed by those brands.</p>
+    <h2 class="reveal">Limitation of liability</h2>
+    <p class="reveal">To the fullest extent permitted by law, our total liability for any claim arising from an order is limited to the amount you paid for that order. We are not liable for indirect, incidental or consequential damages. Nothing in these terms limits rights you have under applicable consumer-protection law.</p>
+    <h2 class="reveal">Governing law</h2>
+    <p class="reveal">These terms are governed by the laws of the State of Florida, USA, without regard to conflict-of-law principles. Any dispute will be resolved in the state or federal courts located in Florida.</p>
+    <h2 class="reveal">Changes</h2>
+    <p class="reveal">We may update these terms from time to time; the version posted at the time of your order applies to that order.</p>
     <div style="text-align:center;margin-top:36px" class="reveal"><a href="#/shop" class="btn btn-ghost">Back to Shop</a></div>
   </div></div></section>`;
 }
@@ -1613,6 +1690,8 @@ function render(){
   else if(path==='/confirmation'){ html=viewConfirmation(); }
   else if(path==='/about'){ html=viewAbout(); }
   else if(path==='/shipping-returns'){ html=viewPolicy(); }
+  else if(path==='/privacy'){ html=viewPrivacy(); }
+  else if(path==='/terms'){ html=viewTerms(); }
   else { html=view404(); }
   app.innerHTML=html;
   setActiveNav(path);
