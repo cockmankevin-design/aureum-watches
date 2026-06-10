@@ -34,7 +34,7 @@ It's a static site. Either:
 
 `#/` home · `#/shop` (`?gender=men|women&sort=low|high|featured`) · `#/men` ·
 `#/women` · `#/watch/<id>` · `#/cart` · `#/checkout` · `#/confirmation` ·
-`#/about` · `#/shipping-returns`
+`#/about` · `#/shipping-returns` · `#/privacy` · `#/terms`
 
 ## Editing the catalog
 
@@ -135,10 +135,13 @@ processor is wired), and an **exit-intent + timed** first-order discount modal.
 
 ## Before accepting real orders (business checklist)
 - Replace placeholder watch illustrations with **your own product photography**.
-- Replace placeholder copy in **About** and **Shipping & Returns** with finalized
-  policies; add **Privacy Policy** and **Terms**.
-- Connect a payment processor (above) and a real support email.
-- Set realistic shipping times for your supplier/dropship lead times.
+- ~~Add Privacy Policy and Terms~~ **Done** — `#/privacy` and `#/terms` are live
+  (Florida governing law), linked in the footer. Optional: have an attorney review.
+- ~~Real support email~~ **Done** — `cockmankevin@gmail.com` in footer + policy pages.
+- Connect a payment processor (above — paste your Snipcart key into `index.html`).
+- Enable GitHub Pages (Settings → Pages → deploy from `main` / root).
+- Confirm shipping times (currently 1–2 day dispatch, 5–9 day delivery) match your
+  actual supplier/dropship lead times.
 - Sell genuine goods honestly — resell Armitron-branded pieces as Armitron; don't
   imply affiliation with brands you don't represent.
 
