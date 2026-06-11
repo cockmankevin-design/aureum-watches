@@ -513,6 +513,17 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .x-divider{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px}
 .x-divider::before,.x-divider::after{content:"";height:1px;background:var(--line);flex:1}
 
+/* ============ Discount code ============ */
+.promo-field{display:flex;border:1px solid var(--line);margin-bottom:14px}
+.promo-field input{flex:1;border:none;background:transparent;padding:11px 13px;outline:none;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase}
+.promo-field button{background:var(--ink);color:var(--ivory);padding:0 16px;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;transition:.3s var(--ease)}
+.promo-field button:hover{background:var(--gold-line)}
+.promo-applied{display:flex;justify-content:space-between;align-items:center;border:1px dashed var(--gold-line);
+  background:var(--ivory-deep);padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:var(--ink-soft)}
+.promo-applied b{color:var(--gold);letter-spacing:.12em}
+.promo-applied button{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+.promo-applied button:hover{color:var(--sale)}
+
 /* ============ Photo lightbox ============ */
 .g-main{cursor:zoom-in}
 .lightbox{position:fixed;inset:0;z-index:470;display:flex;align-items:center;justify-content:center;
@@ -1092,6 +1103,15 @@ function addToCart(id,qty,variant){
 function cartCount(){ return getCart().reduce((n,i)=>n+i.qty,0); }
 function cartSubtotal(){ return getCart().reduce((s,i)=>{const p=byId(i.id);return s+(p?p.price*i.qty:0);},0); }
 
+/* ---- Discount codes (AUREUM10 = welcome 10%) ---- */
+const PROMO_CODES={ AUREUM10: 10 };
+function getPromo(){
+  try{ const c=(localStorage.getItem('aureum_code')||'').toUpperCase();
+    if(PROMO_CODES[c]) return {code:c, pct:PROMO_CODES[c]}; }catch(e){}
+  return null;
+}
+function promoDiscount(sub){ const p=getPromo(); return p ? Math.round(sub*p.pct/100) : 0; }
+
 function updateCartUI(){
   const n=cartCount();
   const badge=$('#cartCount');
@@ -1456,9 +1476,10 @@ function viewCart(){
       <div class="summary">
         <h3>Order Summary</h3>
         <div class="sum-row"><span>Subtotal</span><span class="v">${money(sub)}</span></div>
+        ${promoDiscount(sub)?`<div class="sum-row"><span>Discount (${getPromo().code})</span><span class="v" style="color:var(--gold)">−${money(promoDiscount(sub))}</span></div>`:''}
         <div class="sum-row"><span>Shipping</span><span class="sum-free">Complimentary</span></div>
         <div class="sum-row"><span>Estimated tax</span><span class="muted">Calculated at checkout</span></div>
-        <div class="sum-row total"><span>Total</span><span class="v">${money(sub)}</span></div>
+        <div class="sum-row total"><span>Total</span><span class="v">${money(sub-promoDiscount(sub))}</span></div>
         <div class="express" style="margin-top:22px">
           <div class="x-btn x-apple" data-action="express">&#63743;&nbsp;Pay</div>
           <div class="x-btn x-shop" data-action="express">shop&nbsp;Pay</div>
@@ -1511,15 +1532,21 @@ function viewCheckout(){
           <div class="field"><label>Card number</label><input name="card" placeholder="•••• •••• •••• ••••" disabled style="opacity:.55"/></div>
           <div class="frow"><div class="field"><label>Expiry</label><input placeholder="MM / YY" disabled style="opacity:.55"/></div><div class="field"><label>CVC</label><input placeholder="•••" disabled style="opacity:.55"/></div></div>
         </div>
-        <button type="submit" class="btn btn-block">Place Order (Demo) — ${money(sub)}</button>
+        <button type="submit" class="btn btn-block">Place Order (Demo) — ${money(sub-promoDiscount(sub))}</button>
         <div class="formnote" data-note="checkout"></div>
       </div>
       <div class="summary">
         <h3>Your Order</h3>
         <div class="mini-items">${mini}</div>
+        ${(()=>{const pr=getPromo();
+          return pr
+            ? `<div class="promo-applied"><span>Code <b>${pr.code}</b> · −${pr.pct}%</span><button type="button" data-action="promo-remove">Remove</button></div>`
+            : `<div class="promo-field"><input type="text" id="promoInput" placeholder="Discount code" aria-label="Discount code"/><button type="button" data-action="promo-apply">Apply</button></div><div class="formnote" data-note="promo" style="text-align:left;min-height:0"></div>`;
+        })()}
         <div class="sum-row"><span>Subtotal</span><span class="v">${money(sub)}</span></div>
+        ${promoDiscount(sub)?`<div class="sum-row"><span>Discount (${getPromo().code})</span><span class="v" style="color:var(--gold)">−${money(promoDiscount(sub))}</span></div>`:''}
         <div class="sum-row"><span>Shipping</span><span class="sum-free">Complimentary</span></div>
-        <div class="sum-row total"><span>Total</span><span class="v">${money(sub)}</span></div>
+        <div class="sum-row total"><span>Total</span><span class="v">${money(sub-promoDiscount(sub))}</span></div>
       </div>
     </form>
   </div></section>`;
@@ -1828,6 +1855,13 @@ document.addEventListener('click',(e)=>{
   else if(a==='promo-close'){ closePromo(); }
   else if(a==='promo-backdrop'){ if(!e.target.closest('.promo-card')) closePromo(); }
   else if(a==='lightbox-close'){ const lb=$('#lightbox'); lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); }
+  else if(a==='promo-apply'){
+    const inp=$('#promoInput'); const code=(inp&&inp.value||'').trim().toUpperCase();
+    const note=document.querySelector('[data-note="promo"]');
+    if(PROMO_CODES[code]){ try{localStorage.setItem('aureum_code',code);}catch(_){ } render(); toast(`Code ${code} applied — ${PROMO_CODES[code]}% off`); }
+    else if(note){ note.style.color='var(--sale)'; note.textContent='That code isn’t valid.'; }
+  }
+  else if(a==='promo-remove'){ try{localStorage.removeItem('aureum_code');}catch(_){ } render(); }
 });
 
 document.addEventListener('submit',(e)=>{
@@ -1849,6 +1883,7 @@ document.addEventListener('submit',(e)=>{
     const note=document.querySelector('[data-note="checkout"]');
     if(!ok){ note.style.color='var(--sale)'; note.textContent='Please complete the highlighted fields.'; return; }
     setCart([]);             // clear bag (demo)
+    try{localStorage.removeItem('aureum_code');}catch(_){ }
     location.hash='#/confirmation';
   }
   if(f.dataset.form==='promo'){
