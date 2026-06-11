@@ -219,13 +219,6 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .edit-media img{width:100%;height:100%;object-fit:cover}
 .edit-copy .h2{margin:.2em 0 .5em}
 
-/* ============ Testimonials ============ */
-.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
-.tcard{background:var(--paper);border:1px solid var(--line-soft);padding:38px 34px;text-align:center}
-.stars{color:var(--gold-line);letter-spacing:.3em;font-size:.8rem;margin-bottom:18px}
-.tcard p{font-family:var(--serif);font-size:1.3rem;font-style:italic;line-height:1.4;color:var(--ink-soft)}
-.tcard .who{margin-top:20px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-
 /* ============ Newsletter ============ */
 .news{background:var(--ivory-deep);text-align:center}
 .news form{display:flex;max-width:480px;margin:26px auto 0;gap:0;border:1px solid var(--ink)}
@@ -412,32 +405,6 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 
 @keyframes fade{from{opacity:0}to{opacity:1}}
 
-/* ============ Social proof / scarcity ============ */
-.cstars{display:flex;align-items:center;gap:7px;justify-content:center;margin:0 0 9px}
-.cstars .st{color:var(--gold-line);font-size:.8rem;letter-spacing:1px;line-height:1}
-.cstars .ct{font-size:.7rem;color:var(--muted);letter-spacing:.02em}
-.badge-stock{background:transparent!important;color:var(--gold)!important;border:1px solid var(--gold-line)}
-.pd-rating{display:flex;align-items:center;gap:10px;margin:-6px 0 18px}
-.pd-rating .st{color:var(--gold-line);font-size:1rem;letter-spacing:2px}
-.pd-rating .ct{font-size:.82rem;color:var(--muted)}
-.pd-rating a{border-bottom:1px solid var(--line)}
-.pd-stock{display:flex;align-items:center;gap:9px;font-size:.84rem;color:var(--gold);margin:0 0 22px;letter-spacing:.02em}
-.pd-stock .dot{width:7px;height:7px;border-radius:50%;background:var(--gold-line);box-shadow:0 0 0 3px rgba(200,162,74,.18);animation:pulse 1.8s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.reviews{margin-top:clamp(56px,7vw,84px);border-top:1px solid var(--line);padding-top:clamp(40px,5vw,60px)}
-.reviews-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:30px;flex-wrap:wrap;gap:14px}
-.reviews-head h2{font-size:clamp(1.6rem,3vw,2.2rem)}
-.reviews-head .agg{font-size:.84rem;color:var(--muted)}
-.reviews-head .agg b{color:var(--gold);font-family:var(--serif);font-size:1.4rem}
-.rev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.rev-card{background:var(--paper);border:1px solid var(--line-soft);padding:26px 24px}
-.rev-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.rev-name{font-weight:500;font-size:.9rem;display:flex;align-items:center;gap:7px}
-.rev-name .vf{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold-soft);padding:2px 7px;border-radius:20px}
-.rev-stars{color:var(--gold-line);font-size:.82rem;letter-spacing:1px;margin-bottom:10px}
-.rev-card p{font-size:.92rem;color:var(--ink-soft);font-weight:300;line-height:1.55}
-.rev-meta{margin-top:14px;font-size:.7rem;color:var(--muted);letter-spacing:.04em}
-
 /* ============ Shop price chips (extra filter row) ============ */
 .shop-bar .chips.price .chip{font-size:.68rem}
 
@@ -542,7 +509,6 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
   .hero-grid,.story-grid,.edit-grid,.pd-grid,.cart-layout,.checkout-layout{grid-template-columns:1fr}
   .gallery,.summary{position:static}
   .hero-media{order:-1}
-  .tgrid{grid-template-columns:1fr}
   .foot-grid{grid-template-columns:1fr 1fr;gap:30px}
   .foot-brand{grid-column:1/-1}
 }
@@ -1063,45 +1029,6 @@ function media(p, which, size){
 }
 const savings = p => Math.round((1 - p.price/p.compareAt)*100);
 
-/* ---- Social proof (deterministic, stable per product) ---- */
-function hashId(id){ let h=0; for(let i=0;i<id.length;i++){ h=(h*31 + id.charCodeAt(i))>>>0; } return h; }
-function reviewMeta(p){
-  const h=hashId(p.id);
-  const rating = p.rating || (4.6 + (h%4)*0.1);            // 4.6–4.9
-  const count  = p.reviews || (180 + (h % 1400));          // ~180–1580
-  return { rating: Math.round(rating*10)/10, count };
-}
-function starRow(rating){
-  const full=Math.round(rating);
-  let s='';
-  for(let i=1;i<=5;i++) s+= i<=full ? '★' : '☆';
-  return s;
-}
-/* low-stock helper */
-const lowStock = p => (typeof p.stock==='number' && p.stock>0 && p.stock<=8) ? p.stock : null;
-/* deterministic verified reviews per product */
-const REV_NAMES=['James P.','Sofia R.','Marcus T.','Priya M.','Daniel H.','Elena K.','Thomas C.','Aisha B.','Liam O.','Grace W.','Noah F.','Camila S.'];
-const REV_TEXT=[
-  'Three people asked if it was a Rolex. Genuinely cannot believe the price.',
-  'Heavier and better finished than watches I’ve paid five times more for.',
-  'Arrived in two days, beautifully boxed. Wearing it every single day.',
-  'The dial is unreal in person — photos don’t do it justice.',
-  'Bought one for myself, came back a week later for a second. Flawless.',
-  'My husband hasn’t taken it off since it arrived. Looks incredibly expensive.',
-  'Quietly gets compliments without screaming for attention. Exactly my taste.',
-  'Comfortable, well-weighted, and the bracelet feels solid. No complaints.',
-  'Was skeptical at the price — completely won over. Feels like a luxury piece.'
-];
-function productReviews(p){
-  const h=hashId(p.id); const out=[]; const used=new Set();
-  for(let i=0;i<3;i++){
-    const ni=(h+i*7)%REV_NAMES.length, ti=(h+i*5)%REV_TEXT.length;
-    out.push({ name:REV_NAMES[ni], text:REV_TEXT[(used.has(ti)?(ti+1)%REV_TEXT.length:ti)], item:p.dialColor });
-    used.add(ti);
-  }
-  return out;
-}
-
 /* ---------------------------------------------------------------
    Cart (localStorage)
 ---------------------------------------------------------------- */
@@ -1129,7 +1056,7 @@ function updateCartUI(){
 function upsellHTML(c){
   const ids=new Set(c.map(i=>i.id));
   const ups=PRODUCTS.filter(p=>!ids.has(p.id))
-    .sort((a,b)=> ((b.badge?2:0)+(reviewMeta(b).count>1200?1:0)) - ((a.badge?2:0)+(reviewMeta(a).count>1200?1:0)))
+    .sort((a,b)=> ((b.featured?2:0)+(b.badge?1:0)) - ((a.featured?2:0)+(a.badge?1:0)))
     .slice(0,2);
   if(!ups.length) return '';
   return `<div class="upsell"><h5>Pairs well with</h5>${ups.map(p=>`
@@ -1180,7 +1107,7 @@ function card(p, delay){
   return `<a class="pcard reveal" href="#/watch/${p.id}" style="transition-delay:${delay||0}ms">
     <div class="media">
       ${savings(p)>0?`<span class="tag">Save ${savings(p)}%</span>`:''}
-      ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:(lowStock(p)?`<span class="badge badge-stock">Almost gone</span>`:'')}
+      ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:''}
       ${media(p,0,'card')}
       <span class="quick">View Piece</span>
     </div>
@@ -1188,7 +1115,6 @@ function card(p, delay){
       <div class="gender">${p.gender==='men'?"Men's":"Women's"}</div>
       <h3>${esc(p.name)}</h3>
       <div class="tl">${esc(p.tagline)}</div>
-      ${(()=>{const m=reviewMeta(p);return `<div class="cstars"><span class="st">${starRow(m.rating)}</span> <span class="ct">${m.rating} · ${m.count.toLocaleString('en-US')}</span></div>`;})()}
       <div class="price-row">
         <span class="price-now">${money(p.price)}</span>
         ${p.compareAt?`<span class="price-was">${money(p.compareAt)}</span>`:''}
@@ -1219,7 +1145,6 @@ function viewHome(){
   const hero=byId('marchesa-mop');
   const featured=PRODUCTS.filter(p=>p.featured).slice(0,4);
   const trending=PRODUCTS.filter(p=>p.badge==='Trending').slice(0,4);
-  const bestsellers=PRODUCTS.filter(p=>p.badge==='Bestseller').slice(0,4);
   const womens=PRODUCTS.filter(p=>p.gender==='women').slice(0,4);
   return `
   <section class="hero"><div class="wrap"><div class="hero-grid">
@@ -1248,7 +1173,7 @@ function viewHome(){
     <div class="sec-head reveal">
       <span class="eyebrow">Most Coveted</span>
       <h2 class="h2">The Signature Four</h2>
-      <p class="muted">The pieces our clients reach for first — for men and women who appreciate a quiet flex.</p>
+      <p class="muted">The four we'd put on your wrist first — for men and women who appreciate a quiet flex.</p>
     </div>
     <div class="pgrid">${featured.map((p,i)=>card(p,i*90)).join('')}</div>
     <div style="text-align:center;margin-top:54px" class="reveal"><a href="#/shop" class="linkmore">View All Watches →</a></div>
@@ -1275,7 +1200,7 @@ function viewHome(){
       <div class="stat"><b>60%</b><span>Below comparable retail</span></div>
       <div class="stat"><b>2yr</b><span>Warranty included</span></div>
       <div class="stat"><b>30d</b><span>No-question returns</span></div>
-      <div class="stat"><b>10k+</b><span>Wrists &amp; counting</span></div>
+      <div class="stat"><b>100%</b><span>As photographed — no replicas</span></div>
     </div>
   </div></div></section>
 
@@ -1288,25 +1213,6 @@ function viewHome(){
       <a href="#/women" class="btn btn-ghost">Shop Women's</a>
     </div>
   </div></div></section>
-
-  ${bestsellers.length?`<section class="sec" style="padding-top:0"><div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Most Reviewed</span>
-      <h2 class="h2">Best Sellers</h2>
-      <p class="muted">The pieces racking up the most five-star wrists this season.</p>
-    </div>
-    <div class="pgrid">${bestsellers.map((p,i)=>card(p,i*90)).join('')}</div>
-    <div style="text-align:center;margin-top:54px" class="reveal"><a href="#/shop" class="linkmore">Shop All Best Sellers →</a></div>
-  </div></section>`:''}
-
-  <section class="sec" style="padding-top:0"><div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">Worn &amp; Loved</span><h2 class="h2">From the Wrist</h2></div>
-    <div class="tgrid">
-      <div class="tcard reveal"><div class="stars">★★★★★</div><p>"Three people asked if it was a Rolex. It cost me less than dinner for two."</p><div class="who">Daniel R. · The Regent</div></div>
-      <div class="tcard reveal" style="transition-delay:90ms"><div class="stars">★★★★★</div><p>"The mother-of-pearl is unreal in person. I've stopped wearing anything else."</p><div class="who">Priya M. · The Marchesa</div></div>
-      <div class="tcard reveal" style="transition-delay:180ms"><div class="stars">★★★★★</div><p>"Feels heavier and better made than watches I've paid five times more for."</p><div class="who">Marcus T. · The Sovereign</div></div>
-    </div>
-  </div></section>
 
   <section class="news sec"><div class="wrap">
     <div class="sec-head reveal" style="margin-bottom:0">
@@ -1331,7 +1237,6 @@ function viewShop(filter, sort, price){
   if(price==='over200') list=list.filter(p=>p.price>=200);
   if(sort==='low') list.sort((a,b)=>a.price-b.price);
   else if(sort==='high') list.sort((a,b)=>b.price-a.price);
-  else if(sort==='rated') list.sort((a,b)=>reviewMeta(b).count-reviewMeta(a).count);
   else list.sort((a,b)=>((b.featured?2:0)+(b.badge?1:0))-((a.featured?2:0)+(a.badge?1:0)));
   const title= filter==='men'?"Men's Watches": filter==='women'?"Women's Watches":'The Full Collection';
   const gchip=(f,l)=>`<a class="chip ${filter===f?'active':''}" href="#/shop?gender=${f}&price=${price}&sort=${sort}">${l}</a>`;
@@ -1353,7 +1258,6 @@ function viewShop(filter, sort, price){
         <label for="sort">Sort</label>
         <select id="sort" data-sort>
           <option value="featured" ${sort==='featured'?'selected':''}>Featured</option>
-          <option value="rated" ${sort==='rated'?'selected':''}>Most Reviewed</option>
           <option value="low" ${sort==='low'?'selected':''}>Price · Low to High</option>
           <option value="high" ${sort==='high'?'selected':''}>Price · High to Low</option>
         </select>
@@ -1386,7 +1290,6 @@ function viewProduct(id){
         <span class="eyebrow">${p.gender==='men'?"Men's":"Women's"} · ${esc(p.dialColor)}</span>
         <h1>${esc(p.name)}</h1>
         <div class="tl">${esc(p.tagline)}</div>
-        ${(()=>{const m=reviewMeta(p);return `<div class="pd-rating"><span class="st">${starRow(m.rating)}</span><span class="ct">${m.rating} · <a href="#reviews">${m.count.toLocaleString('en-US')} reviews</a></span></div>`;})()}
         <div class="pd-price">
           <span class="now">${money(p.price)}</span>
           ${p.compareAt?`<span class="was">${money(p.compareAt)}</span>`:''}
@@ -1394,7 +1297,6 @@ function viewProduct(id){
         </div>
         <p class="pd-blurb">${esc(p.blurb)}</p>
         ${variants}
-        ${lowStock(p)?`<div class="pd-stock"><span class="dot"></span>Limited stock — only ${lowStock(p)} left at this price.</div>`:''}
         <div class="buy-row">
           <div class="qty" data-qtybox>
             <button data-qty="dec" aria-label="Decrease"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14" stroke-width="2"/></svg></button>
@@ -1418,21 +1320,6 @@ function viewProduct(id){
         </div>
       </div>
     </div>
-    ${(()=>{const m=reviewMeta(p);const rv=productReviews(p);return `
-    <div class="reviews" id="reviews">
-      <div class="reviews-head reveal">
-        <div><span class="eyebrow">Owner Reviews</span><h2>What buyers say</h2></div>
-        <div class="agg"><b>${m.rating}</b> / 5 · ${m.count.toLocaleString('en-US')} verified reviews</div>
-      </div>
-      <div class="rev-grid">
-        ${rv.map((r,i)=>`<div class="rev-card reveal" style="transition-delay:${i*80}ms">
-          <div class="rev-top"><span class="rev-name">${esc(r.name)} <span class="vf">Verified</span></span></div>
-          <div class="rev-stars">★★★★★</div>
-          <p>${esc(r.text)}</p>
-          <div class="rev-meta">Item: ${esc(r.item)}</div>
-        </div>`).join('')}
-      </div>
-    </div>`;})()}
   </div></section>
 
   <section class="sec" style="background:var(--ivory-deep)"><div class="wrap">
@@ -1903,7 +1790,7 @@ window.addEventListener('scroll',()=>{ head.classList.toggle('scrolled', window.
 // announcement rotator
 const ANN=['Complimentary worldwide shipping · 2-year warranty · 30-day returns',
   'New for 2026 — skeletons, moonphases &amp; integrated sport',
-  'New: The Sovereign & The Noir — now in the men’s collection'];
+  '10% off your first order with code AUREUM10'];
 let ai=0; setInterval(()=>{ ai=(ai+1)%ANN.length; const s=$('#announce'); s.style.animation='none'; void s.offsetWidth; s.style.animation='fade .6s'; s.textContent=ANN[ai]; },4200);
 
 // first-order discount slide-in (shown once)

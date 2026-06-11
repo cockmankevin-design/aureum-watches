@@ -31,9 +31,6 @@ window.PRODUCTS = [
     dialColor: "Mother-of-Pearl",
     featured: true,
     hero: true,
-    badge: "Bestseller",
-    rating: 4.9,
-    reviews: 1190,
     images: [
       "assets/watches/armitron-mop-white-wrist.jpg",
       "assets/watches/armitron-mop-green-box.jpg",
@@ -199,8 +196,6 @@ window.PRODUCTS = [
     compareAt: 260,
     dialColor: "Onyx Black",
     badge: "Trending",
-    stock: 5,
-    reviews: 980,
     images: ["assets/watches/real-monarch.jpg"],
     blurb:
       "The defining silhouette of the moment — a brushed octagonal case flowing into an integrated steel bracelet, with a striped onyx dial and luminous markers. Sport-luxury presence at a fraction of the entry fee.",
@@ -227,13 +222,9 @@ window.PRODUCTS = [
     compareAt: 280,
     dialColor: "Open-Heart",
     featured: true,
-    badge: "Bestseller",
-    stock: 4,
-    rating: 4.8,
-    reviews: 2206,
     images: ["assets/watches/real-mechanist.jpg"],
     blurb:
-      "Our most-talked-about piece. A fully skeletonized, self-winding mechanical movement on open display — Roman numerals floating over gears and bridges, on black leather. No battery. Pure machine.",
+      "A fully skeletonized, self-winding mechanical movement on open display — Roman numerals floating over gears and bridges, on black leather. No battery. Pure machine.",
     specs: {
       "Case size": "42 mm",
       "Case material": "Stainless steel",
@@ -257,8 +248,6 @@ window.PRODUCTS = [
     compareAt: 250,
     dialColor: "Onyx Black",
     badge: "Trending",
-    stock: 8,
-    reviews: 760,
     images: ["assets/watches/real-lunar.jpg"],
     blurb:
       "A working moonphase window set in a black multi-register dial with Roman numerals and a tachymetre ring, on supple black leather. The complication everyone wants, at a price that makes sense.",
@@ -284,13 +273,9 @@ window.PRODUCTS = [
     price: 85,
     compareAt: 250,
     dialColor: "Royal Blue",
-    badge: "Bestseller",
-    stock: 6,
-    rating: 4.8,
-    reviews: 1840,
     images: ["assets/watches/real-tempo.jpg"],
     blurb:
-      "Big, blue and built to be noticed. A royal-blue sunray dial with three working registers and crystal-set markers on brushed steel — the crowd-pleaser of the collection.",
+      "Big, blue and built to be noticed. A royal-blue sunray dial with three working registers and crystal-set markers on brushed steel — the boldest dial in the collection.",
     specs: {
       "Case size": "42 mm",
       "Case material": "Stainless steel",
@@ -314,7 +299,6 @@ window.PRODUCTS = [
     compareAt: 220,
     dialColor: "Emerald Green",
     badge: "Trending",
-    stock: 8,
     images: ["assets/watches/real-depths.jpg"],
     blurb:
       "An emerald sunray dial under a rotating sport bezel, with luminous markers and a solid steel bracelet. On-trend colour with tool-watch bones.",

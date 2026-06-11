@@ -46,9 +46,7 @@ Open **`products.js`** and edit the `window.PRODUCTS` array. Each watch:
   price:189, compareAt:425,        // price = sold; compareAt = struck-through anchor
   dialColor:"…", featured:true,    // featured → shown on the home grid
   blurb:"…", specs:{ "Case size":"40 mm", … },
-  badge:"Trending",                 // optional: "Trending" | "Bestseller" | "New"
-  rating:4.8, reviews:1840,         // optional: social proof (else auto-derived, stable)
-  stock:5,                          // optional: ≤8 shows "Limited stock — only N left"
+  badge:"Trending",                 // optional: "Trending" | "New"
   // EITHER real photos:
   images:["assets/watches/your-photo.jpg", "…"],   // first is primary; 2+ → gallery
   // OR an illustration spec (used when there are no images):
@@ -69,11 +67,13 @@ Open **`products.js`** and edit the `window.PRODUCTS` array. Each watch:
 - `chrono:true` — three chronograph sub-dials (replaces the central seconds hand)
 - `date:false` — hide the date window (auto-hidden for skeleton/chrono)
 
-**Merchandising:** products with `badge:"Trending"` populate the home **Trending Now**
-row; `badge:"Bestseller"` populate **Best Sellers**; `featured:true` populate the
-**Signature Four**. Shop has gender + price (`Under $200` / `$200+`) filters and a
-"Most Reviewed" sort. A one-time **10%-off slide-in** (code `AUREUM10`) shows on first
-visit and is remembered in `localStorage` (`aureum_promo`).
+**Merchandising:** products with `badge:"Trending"` populate the home **What the
+Market Wants Now** row; `featured:true` populate the **Signature Four**. Shop has
+gender + price (`Under $200` / `$200+`) filters. A one-time **10%-off slide-in**
+(code `AUREUM10`) shows on first visit and is remembered in `localStorage`
+(`aureum_promo`). Ratings, review counts and stock counters are intentionally not
+implemented — don't show social proof you don't have. Wire a real review service
+(e.g. Judge.me) once genuine orders exist.
 
 ### Swapping in real product photos
 The hero piece ("The Marchesa") already uses real photos. For any other watch,
