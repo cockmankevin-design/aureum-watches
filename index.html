@@ -513,6 +513,20 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .x-divider{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;margin:4px 0 14px}
 .x-divider::before,.x-divider::after{content:"";height:1px;background:var(--line);flex:1}
 
+/* ============ Photo lightbox ============ */
+.g-main{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:470;display:flex;align-items:center;justify-content:center;
+  background:rgba(14,14,14,.88);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  opacity:0;visibility:hidden;transition:.35s var(--ease);cursor:zoom-out;padding:30px}
+.lightbox.show{opacity:1;visibility:visible}
+.lightbox img{max-width:min(92vw,1100px);max-height:90vh;object-fit:contain;background:#fff;
+  box-shadow:0 40px 120px rgba(0,0,0,.5);transform:scale(.96);transition:.4s var(--ease)}
+.lightbox.show img{transform:none}
+.lightbox-close{position:absolute;top:20px;right:20px;width:42px;height:42px;display:flex;align-items:center;
+  justify-content:center;color:#F7F5F0;border:1px solid rgba(247,245,240,.4);border-radius:50%;transition:.3s var(--ease)}
+.lightbox-close:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.lightbox-close svg{width:18px;height:18px}
+
 /* ============ Responsive ============ */
 @media(max-width:1000px){
   .pgrid{grid-template-columns:repeat(3,1fr)}
@@ -608,7 +622,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
       <div class="foot-col">
         <h4>Maison</h4>
         <a href="#/about">Our Story</a>
-        <a href="#/about">Craftsmanship</a>
+        <a href="#/faq">FAQ</a>
         <a href="#/shipping-returns">Shipping &amp; Returns</a>
         <a href="#/shipping-returns">Warranty</a>
       </div>
@@ -669,6 +683,14 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 
 <!-- Sticky add-to-cart bar (shown on product pages when the main CTA scrolls away) -->
 <div class="stickybar" id="stickyBar" aria-hidden="true"></div>
+
+<!-- Product photo lightbox (click main gallery image to zoom) -->
+<div class="lightbox" id="lightbox" data-action="lightbox-close" aria-hidden="true">
+  <button class="lightbox-close" data-action="lightbox-close" aria-label="Close zoom">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 6l12 12M18 6L6 18" stroke-width="1.5"/></svg>
+  </button>
+  <img id="lightboxImg" alt="Zoomed product photo"/>
+</div>
 
 <script src="products.js"></script>
 <script>
@@ -1647,6 +1669,32 @@ function viewTerms(){
   </div></div></section>`;
 }
 
+function viewFAQ(){
+  const faqs=[
+    ["How long does shipping take?","Orders are dispatched within 1–2 business days and typically arrive in 5–9 business days, fully tracked and insured. Shipping is complimentary on every order, worldwide."],
+    ["Who makes AUREUM watches?","AUREUM is a curated boutique. We select genuine timepieces from established quality manufacturers and sell them under our own collection names — the maker and full specifications are listed on every product page. We never sell counterfeits or replicas of luxury brands."],
+    ["What's the difference between quartz and automatic?","Quartz watches run on a battery-powered movement — accurate, low-maintenance, set-and-forget. Automatics (like The Mechanist, The Lustre and The Serpentine) are mechanical: they wind themselves from the motion of your wrist, no battery at all. That's the sweeping seconds hand and the visible gears."],
+    ["Are the photos the actual watch I'll receive?","Yes — every product photo shows the exact model that ships. Minor variations between production batches can occur, but what you see is what arrives."],
+    ["What does the warranty cover?","Every piece carries a 2-year limited warranty on the movement and finish. If it stops keeping time or the finish fails under normal wear, we repair or replace it. Batteries and normal wear (scratches, strap wear) aren't covered, as is standard."],
+    ["What if it doesn't suit me?","Return any unworn piece in its original packaging within 30 days for a full refund — no questions, no restocking fee. Exchanges for a different model are always welcome."],
+    ["Can I trust the water-resistance ratings?","Ratings are listed honestly per model. 3 ATM handles rain and hand-washing; 5 ATM handles showering; only dedicated dive models should swim. No watch — at any price — should meet hot water or steam."],
+    ["How do I use a discount code?","Enter your code (like your welcome offer) at checkout — it's applied before payment. One code per order."]
+  ];
+  return `<section class="page"><div class="wrap"><div class="prose">
+    <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
+    <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Questions, answered.</h1>
+    <p class="lede reveal">The honest answers to what people ask before they buy. Anything else? <a href="mailto:concierge@aureum.example" style="border-bottom:1px solid">Ask the concierge</a>.</p>
+    <div class="rule-gold reveal" style="margin:40px 0"></div>
+    <div class="acc reveal">
+      ${faqs.map(([q,a],i)=>`<div class="acc-item ${i===0?'open':''}" data-acc>
+        <button class="acc-h">${esc(q)} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6" stroke-width="1.5"/></svg></button>
+        <div class="acc-body"${i===0?' style="max-height:none"':''}><div class="acc-body-inner"><p class="muted" style="font-weight:300">${esc(a)}</p></div></div>
+      </div>`).join('')}
+    </div>
+    <div style="text-align:center;margin-top:44px" class="reveal"><a href="#/shop" class="btn">Browse the Collection</a></div>
+  </div></div></section>`;
+}
+
 function view404(){
   return `<section class="page"><div class="wrap"><div class="confirm">
     <span class="eyebrow">404</span>
@@ -1686,6 +1734,7 @@ function render(){
   else if(path==='/shipping-returns'){ html=viewPolicy(); }
   else if(path==='/privacy'){ html=viewPrivacy(); }
   else if(path==='/terms'){ html=viewTerms(); }
+  else if(path==='/faq'){ html=viewFAQ(); }
   else { html=view404(); }
   app.innerHTML=html;
   setActiveNav(path);
@@ -1761,6 +1810,11 @@ document.addEventListener('click',(e)=>{
   if(th){ const p=byId(parseHash().path.split('/')[2]); const i=+th.dataset.thumb;
     $('#gMain').innerHTML=`<img src="${p.images[i]}" alt="${esc(p.name)}"/>`;
     th.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active')); th.classList.add('active'); return; }
+  // photo lightbox (click main gallery image to zoom)
+  const gm=e.target.closest('#gMain');
+  if(gm){ const im=gm.querySelector('img');
+    if(im){ $('#lightboxImg').src=im.getAttribute('src'); const lb=$('#lightbox'); lb.classList.add('show'); lb.setAttribute('aria-hidden','false'); }
+    return; }
   // accordion
   const ah=e.target.closest('.acc-h');
   if(ah){ const item=ah.closest('[data-acc]'); const body=item.querySelector('.acc-body');
@@ -1795,6 +1849,7 @@ document.addEventListener('click',(e)=>{
   }
   else if(a==='promo-close'){ closePromo(); }
   else if(a==='promo-backdrop'){ if(!e.target.closest('.promo-card')) closePromo(); }
+  else if(a==='lightbox-close'){ const lb=$('#lightbox'); lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); }
 });
 
 document.addEventListener('submit',(e)=>{
@@ -1829,7 +1884,8 @@ document.addEventListener('submit',(e)=>{
 });
 
 document.addEventListener('keydown',(e)=>{
-  if(e.key==='Escape'){ closeCart(); mnav.classList.remove('open'); closePromo(); }
+  if(e.key==='Escape'){ closeCart(); mnav.classList.remove('open'); closePromo();
+    const lb=$('#lightbox'); lb.classList.remove('show'); lb.setAttribute('aria-hidden','true'); }
 });
 
 // sort select (change)
