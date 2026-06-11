@@ -5,8 +5,10 @@
    edit a watch, edit this file only — index.html reads from window.PRODUCTS.
 
    IMAGES — every product uses REAL photographs (self-hosted in assets/watches/).
-   The catalog is curated to 12 real, sourceable watches; each photo shows the
-   actual product that ships. Add more images to any product's `images` array
+   The catalog is curated to 11 real, sourceable watches; each photo shows the
+   actual product that ships. (The Serpentine was removed 2026-06 because its
+   only photo turned out to be AI-generated — re-add it once a real photo of
+   the actual product exists.) Add more images to any product's `images` array
    (first = primary, 2+ = gallery thumbnails).
 
    PRICING (impulse / volume band — best conversion + 3–10× margin)
@@ -17,7 +19,7 @@
 
 window.PRODUCTS = [
 
-  /* ======================= WOMEN'S (6) ======================= */
+  /* ======================= WOMEN'S (5) ======================= */
 
   {
     id: "marchesa-mop",
@@ -51,36 +53,6 @@ window.PRODUCTS = [
       Functions: "Day · Date",
       "Water resistance": "5 ATM (50 m)",
       Crystal: "Mineral",
-      Warranty: "2-year limited"
-    }
-  },
-
-  {
-    id: "serpentine",
-    name: "The Serpentine",
-    tagline: "Two-Tone Open-Heart Automatic · 32 mm",
-    gender: "women",
-    price: 99,
-    compareAt: 260,
-    dialColor: "Royal Blue",
-    featured: true,
-    badge: "Bestseller",
-    stock: 6,
-    rating: 4.9,
-    reviews: 1502,
-    images: ["assets/watches/real-serpentine.jpg"],
-    blurb:
-      "A true self-winding automatic for her. The Serpentine's royal-blue dial opens to reveal the balance wheel beating beneath, with a moon indicator, crystal-set markers and a sculpted two-tone bracelet. Mechanical jewellery.",
-    specs: {
-      "Case size": "32 mm",
-      "Case material": "Two-tone stainless steel",
-      Bezel: "Polished, gold-tone",
-      Bracelet: "Two-tone faceted-link",
-      Dial: "Royal-blue, open-heart window, moon indicator, crystal markers",
-      Movement: "Automatic mechanical (self-winding)",
-      Functions: "Open-heart · Sub-dials · Moon indicator",
-      "Water resistance": "3 ATM (30 m)",
-      Crystal: "Hardened mineral",
       Warranty: "2-year limited"
     }
   },
@@ -120,8 +92,7 @@ window.PRODUCTS = [
     dialColor: "Deep Blue",
     images: [
       "assets/watches/real-celeste.jpg",
-      "assets/watches/real-celeste-2.jpg",
-      "assets/watches/real-celeste-3.jpg"
+      "assets/watches/real-celeste-2.jpg"
     ],
     blurb:
       "A deep-blue dial with crisp white numerals in a warm gold case, on supple chestnut leather. The Céleste is quietly classic — the watch you reach for without thinking.",
@@ -147,8 +118,9 @@ window.PRODUCTS = [
     price: 99,
     compareAt: 260,
     dialColor: "Transparent",
+    featured: true,
     badge: "New",
-    images: ["assets/watches/real-lustre.jpg", "assets/watches/real-lustre-2.jpg"],
+    images: ["assets/watches/real-lustre.jpg"],
     blurb:
       "Fully openworked, fully mechanical. The Lustre's transparent dial puts the entire self-winding movement on display inside a crystal-set bezel, on white leather. Pure theatre for the wrist.",
     specs: {
@@ -173,7 +145,7 @@ window.PRODUCTS = [
     price: 65,
     compareAt: 190,
     dialColor: "Mother-of-Pearl",
-    images: ["assets/watches/real-bijou.jpg", "assets/watches/real-bijou-2.jpg"],
+    images: ["assets/watches/real-bijou.jpg"],
     blurb:
       "Half watch, half bracelet. The Bijou pairs a mother-of-pearl dial ringed in crystals with a sculpted rose-gem link band — jewellery that happens to keep perfect time.",
     specs: {
