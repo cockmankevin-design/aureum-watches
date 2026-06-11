@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#F7F5F0" />
 <!-- Brand favicon (inline SVG — gold A monogram on ink) -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20fill='%23141414'/%3E%3Ctext%20x='16'%20y='23'%20font-family='Georgia,serif'%20font-size='21'%20fill='%23C8A24A'%20text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
-<!-- Social sharing (set absolute og:url + og:image after deploy) -->
+<!-- Social sharing (canonical/og:url/og:image are added at domain cutover — see DOMAIN-CUTOVER.md, private) -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="AUREUM" />
 <meta property="og:title" content="AUREUM — Fine Timepieces for Men &amp; Women" />
@@ -616,8 +616,8 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
         <h4>Contact</h4>
         <a href="mailto:concierge@aureum.example">concierge@aureum.example</a>
         <a href="#/shipping-returns">Track an Order</a>
-        <a href="#/about">FAQ</a>
-        <a href="#/shipping-returns">Returns Portal</a>
+        <a href="#/privacy">Privacy Policy</a>
+        <a href="#/terms">Terms of Service</a>
       </div>
     </div>
     <div class="foot-bottom">
@@ -1025,12 +1025,19 @@ function tankFace(r,t,uid,darkDial,mark,hand,sec,cx,cy){
   return o.join('');
 }
 
-/* Media: real photo if available, else SVG illustration */
+/* Media: real photo if available, else SVG illustration.
+   size==='card' serves the lightweight 640px derivative (-card.jpg) with a
+   responsive srcset — grids/thumbnails load ~70% less image weight. */
 let UID=0;
-function media(p, which){
+function media(p, which, size){
   const img = (p.images && p.images.length) ? p.images[which||0] : null;
-  if(img) return `<img src="${img}" alt="${esc(p.name)} — ${esc(p.tagline)}" loading="lazy"/>`;
-  return watchSVG(p, ++UID);
+  if(!img) return watchSVG(p, ++UID);
+  const alt=`${esc(p.name)} — ${esc(p.tagline)}`;
+  if(size==='card'){
+    const card=img.replace(/\.jpg$/i,'-card.jpg');
+    return `<img src="${card}" srcset="${card} 640w, ${img} 1280w" sizes="(max-width:560px) 46vw, (max-width:1000px) 30vw, 300px" alt="${alt}" loading="lazy" decoding="async"/>`;
+  }
+  return `<img src="${img}" alt="${alt}" loading="lazy" decoding="async"/>`;
 }
 const savings = p => Math.round((1 - p.price/p.compareAt)*100);
 
@@ -1105,7 +1112,7 @@ function upsellHTML(c){
   if(!ups.length) return '';
   return `<div class="upsell"><h5>Pairs well with</h5>${ups.map(p=>`
     <div class="upsell-item">
-      <a class="u-media" href="#/watch/${p.id}" data-action="cart-close">${media(p)}</a>
+      <a class="u-media" href="#/watch/${p.id}" data-action="cart-close">${media(p,0,'card')}</a>
       <div class="u-info"><b>${esc(p.name)}</b><span>${money(p.price)}</span></div>
       <button class="upsell-add" data-action="quickadd" data-id="${p.id}">Add</button>
     </div>`).join('')}</div>`;
@@ -1120,7 +1127,7 @@ function renderDrawer(){
   body.innerHTML=c.map((i,idx)=>{
     const p=byId(i.id); if(!p) return '';
     return `<div class="ci">
-      <div class="ci-media">${media(p)}</div>
+      <div class="ci-media">${media(p,0,'card')}</div>
       <div>
         <h4>${esc(p.name)}</h4>
         ${i.variant?`<div class="ci-var">${esc(i.variant)}</div>`:''}
@@ -1152,7 +1159,7 @@ function card(p, delay){
     <div class="media">
       ${savings(p)>0?`<span class="tag">Save ${savings(p)}%</span>`:''}
       ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:(lowStock(p)?`<span class="badge badge-stock">Almost gone</span>`:'')}
-      ${media(p)}
+      ${media(p,0,'card')}
       <span class="quick">View Piece</span>
     </div>
     <div class="pinfo">
@@ -1351,7 +1358,7 @@ function viewProduct(id){
     <div class="pd-grid">
       <div class="gallery">
         <div class="g-main" id="gMain">${media(p,0)}</div>
-        ${hasGallery?`<div class="g-thumbs">${p.images.map((src,i)=>`<button class="${i===0?'active':''}" data-thumb="${i}"><img src="${src}" alt="View ${i+1}"/></button>`).join('')}</div>`:''}
+        ${hasGallery?`<div class="g-thumbs">${p.images.map((src,i)=>`<button class="${i===0?'active':''}" data-thumb="${i}"><img src="${src.replace(/\.jpg$/i,'-card.jpg')}" alt="View ${i+1}" loading="lazy"/></button>`).join('')}</div>`:''}
       </div>
       <div class="pd-info">
         <span class="eyebrow">${p.gender==='men'?"Men's":"Women's"} · ${esc(p.dialColor)}</span>
@@ -1424,7 +1431,7 @@ function viewCart(){
   const items=c.map((i,idx)=>{
     const p=byId(i.id);
     return `<div class="ci">
-      <a class="ci-media" href="#/watch/${p.id}">${media(p)}</a>
+      <a class="ci-media" href="#/watch/${p.id}">${media(p,0,'card')}</a>
       <div>
         <h4>${esc(p.name)}</h4>
         <div class="ci-var">${esc(p.tagline)}${i.variant?` · ${esc(i.variant)}`:''}</div>
@@ -1470,7 +1477,7 @@ function viewCheckout(){
   if(!c.length) return viewCart();
   const sub=cartSubtotal();
   const mini=c.map(i=>{const p=byId(i.id);return `<div class="mini-ci">
-    <div class="m-media">${media(p)}<span class="m-q">${i.qty}</span></div>
+    <div class="m-media">${media(p,0,'card')}<span class="m-q">${i.qty}</span></div>
     <div class="m-info"><b>${esc(p.name)}</b><span class="muted">${esc(p.tagline)}${i.variant?` · ${esc(i.variant)}`:''}</span></div>
     <div class="ci-price">${money(p.price*i.qty)}</div>
   </div>`;}).join('');
@@ -1582,6 +1589,64 @@ function viewPolicy(){
   </div></div></section>`;
 }
 
+function viewPrivacy(){
+  return `<section class="page"><div class="wrap"><div class="prose">
+    <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
+    <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Privacy Policy</h1>
+    <p class="lede reveal">What we collect, why, and the choices you have. Questions? <a href="mailto:concierge@aureum.example" style="border-bottom:1px solid">Reach our concierge</a>.</p>
+    <div class="rule-gold reveal" style="margin:40px 0"></div>
+    <h2 class="reveal">What we collect</h2>
+    <ul>
+      <li class="reveal"><b>Order details</b> — name, shipping address and email, used solely to fulfil and support your order.</li>
+      <li class="reveal"><b>Email address</b> — only if you join our list (newsletter or welcome offer). One-click unsubscribe in every email.</li>
+      <li class="reveal"><b>Payment information</b> — handled entirely by our payment processor over an encrypted connection. We never see or store your card number.</li>
+      <li class="reveal"><b>Basic site analytics</b> — aggregate, non-identifying usage data to improve the store.</li>
+    </ul>
+    <h2 class="reveal">What we don't do</h2>
+    <ul>
+      <li class="reveal">We do not sell, rent or trade your personal information. Ever.</li>
+      <li class="reveal">We share data only with the services required to run the store — payment processing and shipping carriers — and only what they need.</li>
+    </ul>
+    <h2 class="reveal">Your choices</h2>
+    <ul>
+      <li class="reveal">Email us any time to access, correct or delete the personal data we hold about you.</li>
+      <li class="reveal">Unsubscribe from marketing at any time via the link in any email.</li>
+    </ul>
+    <p class="reveal muted" style="margin-top:30px;font-size:.9rem">Note: This is placeholder policy copy for a demonstration storefront. Have it finalized for your jurisdiction before accepting real orders.</p>
+    <div style="text-align:center;margin-top:36px" class="reveal"><a href="#/shop" class="btn btn-ghost">Back to Shop</a></div>
+  </div></div></section>`;
+}
+
+function viewTerms(){
+  return `<section class="page"><div class="wrap"><div class="prose">
+    <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
+    <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Terms of Service</h1>
+    <p class="lede reveal">The short, honest version of how shopping with AUREUM works.</p>
+    <div class="rule-gold reveal" style="margin:40px 0"></div>
+    <h2 class="reveal">Orders &amp; payment</h2>
+    <ul>
+      <li class="reveal">All prices are in USD. Your payment is captured securely at checkout by our payment processor.</li>
+      <li class="reveal">We confirm every order by email. If we cannot fulfil an order, you receive a full refund — promptly.</li>
+    </ul>
+    <h2 class="reveal">Shipping, returns &amp; warranty</h2>
+    <ul>
+      <li class="reveal">Shipping is complimentary and tracked; see <a href="#/shipping-returns" style="border-bottom:1px solid">Shipping &amp; Returns</a> for timelines.</li>
+      <li class="reveal">Unworn pieces may be returned within 30 days for a full refund. Every watch carries a 2-year limited warranty on movement and finish.</li>
+    </ul>
+    <h2 class="reveal">Products</h2>
+    <ul>
+      <li class="reveal">AUREUM is a curated boutique: we select and sell genuine timepieces from quality manufacturers under our own collection names. Specifications and maker details are listed on each product page.</li>
+      <li class="reveal">Product photography shows the actual model sold. Minor variations between batches can occur.</li>
+    </ul>
+    <h2 class="reveal">Liability</h2>
+    <ul>
+      <li class="reveal">Our liability for any order is limited to the amount you paid for it.</li>
+    </ul>
+    <p class="reveal muted" style="margin-top:30px;font-size:.9rem">Note: This is placeholder copy for a demonstration storefront. Have it finalized for your jurisdiction before accepting real orders.</p>
+    <div style="text-align:center;margin-top:36px" class="reveal"><a href="#/shop" class="btn btn-ghost">Back to Shop</a></div>
+  </div></div></section>`;
+}
+
 function view404(){
   return `<section class="page"><div class="wrap"><div class="confirm">
     <span class="eyebrow">404</span>
@@ -1619,6 +1684,8 @@ function render(){
   else if(path==='/confirmation'){ html=viewConfirmation(); }
   else if(path==='/about'){ html=viewAbout(); }
   else if(path==='/shipping-returns'){ html=viewPolicy(); }
+  else if(path==='/privacy'){ html=viewPrivacy(); }
+  else if(path==='/terms'){ html=viewTerms(); }
   else { html=view404(); }
   app.innerHTML=html;
   setActiveNav(path);
@@ -1635,7 +1702,7 @@ let stickyIO;
 function setupSticky(p){
   const bar=$('#stickyBar');
   bar.innerHTML=`<div class="stickybar-in">
-    <div class="sb-media">${media(p)}</div>
+    <div class="sb-media">${media(p,0,'card')}</div>
     <div class="sb-info"><div class="sb-name">${esc(p.name)}</div>
       <div class="sb-price"><b>${money(p.price)}</b>${p.compareAt?`<span class="was">${money(p.compareAt)}</span>`:''}</div></div>
     <button class="btn" data-action="add" data-id="${p.id}">Add to Bag</button>
