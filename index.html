@@ -1063,44 +1063,19 @@ function media(p, which, size){
 }
 const savings = p => Math.round((1 - p.price/p.compareAt)*100);
 
-/* ---- Social proof (deterministic, stable per product) ---- */
-function hashId(id){ let h=0; for(let i=0;i<id.length;i++){ h=(h*31 + id.charCodeAt(i))>>>0; } return h; }
-function reviewMeta(p){
-  const h=hashId(p.id);
-  const rating = p.rating || (4.6 + (h%4)*0.1);            // 4.6–4.9
-  const count  = p.reviews || (180 + (h % 1400));          // ~180–1580
-  return { rating: Math.round(rating*10)/10, count };
-}
+/* ---- Honest social proof ----
+   We only show ratings we have actually observed: `makerRating` is the maker's
+   marketplace average for that model (set per product in products.js). No counts,
+   names or quotes are invented. Our own store reviews can be added once real
+   customer reviews exist. */
 function starRow(rating){
   const full=Math.round(rating);
   let s='';
   for(let i=1;i<=5;i++) s+= i<=full ? '★' : '☆';
   return s;
 }
-/* low-stock helper */
+/* low-stock helper — shows only when a REAL stock count is set on a product */
 const lowStock = p => (typeof p.stock==='number' && p.stock>0 && p.stock<=8) ? p.stock : null;
-/* deterministic verified reviews per product */
-const REV_NAMES=['James P.','Sofia R.','Marcus T.','Priya M.','Daniel H.','Elena K.','Thomas C.','Aisha B.','Liam O.','Grace W.','Noah F.','Camila S.'];
-const REV_TEXT=[
-  'Three people asked if it was a Rolex. Genuinely cannot believe the price.',
-  'Heavier and better finished than watches I’ve paid five times more for.',
-  'Arrived in two days, beautifully boxed. Wearing it every single day.',
-  'The dial is unreal in person — photos don’t do it justice.',
-  'Bought one for myself, came back a week later for a second. Flawless.',
-  'My husband hasn’t taken it off since it arrived. Looks incredibly expensive.',
-  'Quietly gets compliments without screaming for attention. Exactly my taste.',
-  'Comfortable, well-weighted, and the bracelet feels solid. No complaints.',
-  'Was skeptical at the price — completely won over. Feels like a luxury piece.'
-];
-function productReviews(p){
-  const h=hashId(p.id); const out=[]; const used=new Set();
-  for(let i=0;i<3;i++){
-    const ni=(h+i*7)%REV_NAMES.length, ti=(h+i*5)%REV_TEXT.length;
-    out.push({ name:REV_NAMES[ni], text:REV_TEXT[(used.has(ti)?(ti+1)%REV_TEXT.length:ti)], item:p.dialColor });
-    used.add(ti);
-  }
-  return out;
-}
 
 /* ---------------------------------------------------------------
    Cart (localStorage)
@@ -1129,7 +1104,7 @@ function updateCartUI(){
 function upsellHTML(c){
   const ids=new Set(c.map(i=>i.id));
   const ups=PRODUCTS.filter(p=>!ids.has(p.id))
-    .sort((a,b)=> ((b.badge?2:0)+(reviewMeta(b).count>1200?1:0)) - ((a.badge?2:0)+(reviewMeta(a).count>1200?1:0)))
+    .sort((a,b)=> ((b.badge?2:0)+(b.makerRating?1:0)) - ((a.badge?2:0)+(a.makerRating?1:0)))
     .slice(0,2);
   if(!ups.length) return '';
   return `<div class="upsell"><h5>Pairs well with</h5>${ups.map(p=>`
@@ -1188,7 +1163,7 @@ function card(p, delay){
       <div class="gender">${p.gender==='men'?"Men's":"Women's"}</div>
       <h3>${esc(p.name)}</h3>
       <div class="tl">${esc(p.tagline)}</div>
-      ${(()=>{const m=reviewMeta(p);return `<div class="cstars"><span class="st">${starRow(m.rating)}</span> <span class="ct">${m.rating} · ${m.count.toLocaleString('en-US')}</span></div>`;})()}
+      ${p.makerRating?`<div class="cstars"><span class="st">${starRow(p.makerRating)}</span> <span class="ct">${p.makerRating} maker rating</span></div>`:''}
       <div class="price-row">
         <span class="price-now">${money(p.price)}</span>
         ${p.compareAt?`<span class="price-was">${money(p.compareAt)}</span>`:''}
@@ -1272,10 +1247,10 @@ function viewHome(){
       <div style="margin-top:30px"><a href="#/about" class="linkmore" style="color:var(--ivory);border-color:var(--ivory)">Read Our Story →</a></div>
     </div>
     <div class="story-stats reveal" style="transition-delay:120ms">
-      <div class="stat"><b>60%</b><span>Below comparable retail</span></div>
+      <div class="stat"><b>12</b><span>Curated pieces, no filler</span></div>
       <div class="stat"><b>2yr</b><span>Warranty included</span></div>
       <div class="stat"><b>30d</b><span>No-question returns</span></div>
-      <div class="stat"><b>10k+</b><span>Wrists &amp; counting</span></div>
+      <div class="stat"><b>100%</b><span>Genuine, named makers</span></div>
     </div>
   </div></div></section>
 
@@ -1291,20 +1266,20 @@ function viewHome(){
 
   ${bestsellers.length?`<section class="sec" style="padding-top:0"><div class="wrap">
     <div class="sec-head reveal">
-      <span class="eyebrow">Most Reviewed</span>
+      <span class="eyebrow">House Favourites</span>
       <h2 class="h2">Best Sellers</h2>
-      <p class="muted">The pieces racking up the most five-star wrists this season.</p>
+      <p class="muted">The pieces our buyers reach for first — led by the makers' highest-rated models.</p>
     </div>
     <div class="pgrid">${bestsellers.map((p,i)=>card(p,i*90)).join('')}</div>
     <div style="text-align:center;margin-top:54px" class="reveal"><a href="#/shop" class="linkmore">Shop All Best Sellers →</a></div>
   </div></section>`:''}
 
   <section class="sec" style="padding-top:0"><div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">Worn &amp; Loved</span><h2 class="h2">From the Wrist</h2></div>
+    <div class="sec-head reveal"><span class="eyebrow">Our Standard</span><h2 class="h2">How We Curate</h2></div>
     <div class="tgrid">
-      <div class="tcard reveal"><div class="stars">★★★★★</div><p>"Three people asked if it was a Rolex. It cost me less than dinner for two."</p><div class="who">Daniel R. · The Regent</div></div>
-      <div class="tcard reveal" style="transition-delay:90ms"><div class="stars">★★★★★</div><p>"The mother-of-pearl is unreal in person. I've stopped wearing anything else."</p><div class="who">Priya M. · The Marchesa</div></div>
-      <div class="tcard reveal" style="transition-delay:180ms"><div class="stars">★★★★★</div><p>"Feels heavier and better made than watches I've paid five times more for."</p><div class="who">Marcus T. · The Sovereign</div></div>
+      <div class="tcard reveal"><div class="stars">✦</div><p>"Genuine makers, named openly on every product page. No counterfeits, no borrowed logos — ever."</p><div class="who">Provenance</div></div>
+      <div class="tcard reveal" style="transition-delay:90ms"><div class="stars">✦</div><p>"Every photo shows the exact model that ships. What you see is what arrives in the box."</p><div class="who">Honest Photography</div></div>
+      <div class="tcard reveal" style="transition-delay:180ms"><div class="stars">✦</div><p>"A 2-year warranty and 30-day no-question returns on every piece. If it isn't right, we make it right."</p><div class="who">Backed By Us</div></div>
     </div>
   </div></section>
 
@@ -1331,7 +1306,6 @@ function viewShop(filter, sort, price){
   if(price==='over200') list=list.filter(p=>p.price>=200);
   if(sort==='low') list.sort((a,b)=>a.price-b.price);
   else if(sort==='high') list.sort((a,b)=>b.price-a.price);
-  else if(sort==='rated') list.sort((a,b)=>reviewMeta(b).count-reviewMeta(a).count);
   else list.sort((a,b)=>((b.featured?2:0)+(b.badge?1:0))-((a.featured?2:0)+(a.badge?1:0)));
   const title= filter==='men'?"Men's Watches": filter==='women'?"Women's Watches":'The Full Collection';
   const gchip=(f,l)=>`<a class="chip ${filter===f?'active':''}" href="#/shop?gender=${f}&price=${price}&sort=${sort}">${l}</a>`;
@@ -1353,7 +1327,6 @@ function viewShop(filter, sort, price){
         <label for="sort">Sort</label>
         <select id="sort" data-sort>
           <option value="featured" ${sort==='featured'?'selected':''}>Featured</option>
-          <option value="rated" ${sort==='rated'?'selected':''}>Most Reviewed</option>
           <option value="low" ${sort==='low'?'selected':''}>Price · Low to High</option>
           <option value="high" ${sort==='high'?'selected':''}>Price · High to Low</option>
         </select>
@@ -1386,7 +1359,7 @@ function viewProduct(id){
         <span class="eyebrow">${p.gender==='men'?"Men's":"Women's"} · ${esc(p.dialColor)}</span>
         <h1>${esc(p.name)}</h1>
         <div class="tl">${esc(p.tagline)}</div>
-        ${(()=>{const m=reviewMeta(p);return `<div class="pd-rating"><span class="st">${starRow(m.rating)}</span><span class="ct">${m.rating} · <a href="#reviews">${m.count.toLocaleString('en-US')} reviews</a></span></div>`;})()}
+        ${p.makerRating?`<div class="pd-rating"><span class="st">${starRow(p.makerRating)}</span><span class="ct">${p.makerRating} · <a href="#reviews">maker's marketplace average</a></span></div>`:''}
         <div class="pd-price">
           <span class="now">${money(p.price)}</span>
           ${p.compareAt?`<span class="was">${money(p.compareAt)}</span>`:''}
@@ -1418,21 +1391,26 @@ function viewProduct(id){
         </div>
       </div>
     </div>
-    ${(()=>{const m=reviewMeta(p);const rv=productReviews(p);return `
     <div class="reviews" id="reviews">
       <div class="reviews-head reveal">
-        <div><span class="eyebrow">Owner Reviews</span><h2>What buyers say</h2></div>
-        <div class="agg"><b>${m.rating}</b> / 5 · ${m.count.toLocaleString('en-US')} verified reviews</div>
+        <div><span class="eyebrow">Provenance</span><h2>What you're buying</h2></div>
+        ${p.makerRating?`<div class="agg"><b>${p.makerRating}</b> / 5 · maker's marketplace average for this model</div>`:''}
       </div>
       <div class="rev-grid">
-        ${rv.map((r,i)=>`<div class="rev-card reveal" style="transition-delay:${i*80}ms">
-          <div class="rev-top"><span class="rev-name">${esc(r.name)} <span class="vf">Verified</span></span></div>
-          <div class="rev-stars">★★★★★</div>
-          <p>${esc(r.text)}</p>
-          <div class="rev-meta">Item: ${esc(r.item)}</div>
-        </div>`).join('')}
+        <div class="rev-card reveal">
+          <div class="rev-top"><span class="rev-name">Genuine maker <span class="vf">${esc(p.specs.Maker||'Named')}</span></span></div>
+          <p>A real ${esc(p.specs.Maker||'manufacturer')} timepiece, sold under our collection name. The maker and full specifications are listed openly — no counterfeits, no borrowed logos.</p>
+        </div>
+        <div class="rev-card reveal" style="transition-delay:80ms">
+          <div class="rev-top"><span class="rev-name">Honest photos</span></div>
+          <p>Every photo shows the exact model that ships. What you see on this page is what arrives in the box.</p>
+        </div>
+        <div class="rev-card reveal" style="transition-delay:160ms">
+          <div class="rev-top"><span class="rev-name">Backed by us</span></div>
+          <p>2-year movement &amp; finish warranty, 30-day no-question returns, and tracked, insured shipping on every order.</p>
+        </div>
       </div>
-    </div>`;})()}
+    </div>
   </div></section>
 
   <section class="sec" style="background:var(--ivory-deep)"><div class="wrap">

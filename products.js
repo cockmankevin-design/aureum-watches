@@ -30,8 +30,6 @@ window.PRODUCTS = [
     featured: true,
     hero: true,
     badge: "Bestseller",
-    rating: 4.9,
-    reviews: 1190,
     images: [
       "assets/watches/armitron-mop-white-wrist.jpg",
       "assets/watches/armitron-mop-green-box.jpg",
@@ -42,6 +40,7 @@ window.PRODUCTS = [
     blurb:
       "A jeweller's silhouette rendered at an honest price. The Marchesa pairs a fluted two-tone bezel with a luminous mother-of-pearl dial and hand-set crystal markers — a quiet flash of light at the wrist.",
     specs: {
+      Maker: "Armitron",
       "Case size": "26 mm",
       "Case material": "Two-tone stainless steel",
       Bezel: "Fluted, gold-tone",
@@ -65,13 +64,11 @@ window.PRODUCTS = [
     dialColor: "Royal Blue",
     featured: true,
     badge: "Bestseller",
-    stock: 6,
-    rating: 4.9,
-    reviews: 1502,
     images: ["assets/watches/real-serpentine.jpg"],
     blurb:
       "A true self-winding automatic for her. The Serpentine's royal-blue dial opens to reveal the balance wheel beating beneath, with a moon indicator, crystal-set markers and a sculpted two-tone bracelet. Mechanical jewellery.",
     specs: {
+      Maker: "OUPINKE",
       "Case size": "32 mm",
       "Case material": "Two-tone stainless steel",
       Bezel: "Polished, gold-tone",
@@ -97,6 +94,7 @@ window.PRODUCTS = [
     blurb:
       "Featherweight rose-gold Milanese mesh and a clean pearl-white dial set with crystals. The Aria is the everyday piece that disappears on the wrist until someone notices it.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "30 mm",
       "Case material": "Rose-gold-tone stainless steel",
       Bezel: "Polished",
@@ -126,6 +124,7 @@ window.PRODUCTS = [
     blurb:
       "A deep-blue dial with crisp white numerals in a warm gold case, on supple chestnut leather. The Céleste is quietly classic — the watch you reach for without thinking.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "28 mm",
       "Case material": "Gold-tone stainless steel",
       Bezel: "Polished",
@@ -152,6 +151,7 @@ window.PRODUCTS = [
     blurb:
       "Fully openworked, fully mechanical. The Lustre's transparent dial puts the entire self-winding movement on display inside a crystal-set bezel, on white leather. Pure theatre for the wrist.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "34 mm",
       "Case material": "Stainless steel, crystal-set bezel",
       Bezel: "Baguette-crystal set",
@@ -177,6 +177,7 @@ window.PRODUCTS = [
     blurb:
       "Half watch, half bracelet. The Bijou pairs a mother-of-pearl dial ringed in crystals with a sculpted rose-gem link band — jewellery that happens to keep perfect time.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "28 mm",
       "Case material": "Stainless steel, crystal-set bezel",
       Bezel: "Crystal-set",
@@ -200,11 +201,13 @@ window.PRODUCTS = [
     price: 79,
     compareAt: 230,
     dialColor: "Silver-White",
+    makerRating: 4.3,   // observed marketplace average for this maker model
     featured: true,
     images: ["assets/watches/real-regent.jpg"],
     blurb:
       "The boardroom classic, upgraded. A silver-white dial with three working registers, crystal-set markers and Roman numerals on a two-tone bracelet — finished to read far above its price.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "42 mm",
       "Case material": "Two-tone stainless steel",
       Bezel: "Polished, gold-tone",
@@ -227,12 +230,11 @@ window.PRODUCTS = [
     compareAt: 260,
     dialColor: "Onyx Black",
     badge: "Trending",
-    stock: 5,
-    reviews: 980,
     images: ["assets/watches/real-monarch.jpg"],
     blurb:
       "The defining silhouette of the moment — a brushed octagonal case flowing into an integrated steel bracelet, with a striped onyx dial and luminous markers. Sport-luxury presence at a fraction of the entry fee.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "41 mm",
       "Case material": "Brushed stainless steel",
       Bezel: "Octagonal, brushed",
@@ -254,15 +256,14 @@ window.PRODUCTS = [
     price: 99,
     compareAt: 280,
     dialColor: "Open-Heart",
+    makerRating: 4.4,   // observed marketplace average for this maker model
     featured: true,
     badge: "Bestseller",
-    stock: 4,
-    rating: 4.8,
-    reviews: 2206,
     images: ["assets/watches/real-mechanist.jpg"],
     blurb:
       "Our most-talked-about piece. A fully skeletonized, self-winding mechanical movement on open display — Roman numerals floating over gears and bridges, on black leather. No battery. Pure machine.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "42 mm",
       "Case material": "Stainless steel",
       Bezel: "Polished",
@@ -284,13 +285,13 @@ window.PRODUCTS = [
     price: 85,
     compareAt: 250,
     dialColor: "Onyx Black",
+    makerRating: 4.3,   // observed marketplace average for this maker model
     badge: "Trending",
-    stock: 8,
-    reviews: 760,
     images: ["assets/watches/real-lunar.jpg"],
     blurb:
       "A working moonphase window set in a black multi-register dial with Roman numerals and a tachymetre ring, on supple black leather. The complication everyone wants, at a price that makes sense.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "42 mm",
       "Case material": "Stainless steel",
       Bezel: "Tachymetre ring",
@@ -312,14 +313,13 @@ window.PRODUCTS = [
     price: 85,
     compareAt: 250,
     dialColor: "Royal Blue",
+    makerRating: 4.3,   // observed marketplace average for this maker model
     badge: "Bestseller",
-    stock: 6,
-    rating: 4.8,
-    reviews: 1840,
     images: ["assets/watches/real-tempo.jpg"],
     blurb:
       "Big, blue and built to be noticed. A royal-blue sunray dial with three working registers and crystal-set markers on brushed steel — the crowd-pleaser of the collection.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "42 mm",
       "Case material": "Stainless steel",
       Bezel: "Polished",
@@ -341,12 +341,13 @@ window.PRODUCTS = [
     price: 75,
     compareAt: 220,
     dialColor: "Emerald Green",
+    makerRating: 4.3,   // observed marketplace average for this maker model
     badge: "Trending",
-    stock: 8,
     images: ["assets/watches/real-depths.jpg"],
     blurb:
       "An emerald sunray dial under a rotating sport bezel, with luminous markers and a solid steel bracelet. On-trend colour with tool-watch bones.",
     specs: {
+      Maker: "OLEVS",
       "Case size": "42 mm",
       "Case material": "Stainless steel",
       Bezel: "Rotating sport bezel",
