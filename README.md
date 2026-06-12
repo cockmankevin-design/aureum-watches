@@ -1,4 +1,4 @@
-# AUREUM — Fine Timepieces Storefront
+# HOURLEIGH — Fine Timepieces Storefront
 
 A quiet-luxury watch storefront for men's and women's watches. Single-page app,
 hash-routed, **no build step, no Node** — drops straight onto GitHub Pages.
@@ -72,8 +72,8 @@ Open **`products.js`** and edit the `window.PRODUCTS` array. Each watch:
 **Merchandising:** products with `badge:"Trending"` populate the home **Trending Now**
 row; `badge:"Bestseller"` populate **Best Sellers**; `featured:true` populate the
 **Signature Four**. Shop has gender + price (`Under $200` / `$200+`) filters and a
-"Most Reviewed" sort. A one-time **10%-off slide-in** (code `AUREUM10`) shows on first
-visit and is remembered in `localStorage` (`aureum_promo`).
+"Most Reviewed" sort. A one-time **10%-off slide-in** (code `HOURLEIGH10`) shows on first
+visit and is remembered in `localStorage` (`hourleigh_promo`).
 
 ### Swapping in real product photos
 The hero piece ("The Marchesa") already uses real photos. For any other watch,
@@ -84,7 +84,7 @@ just add an `images:[...]` array and it replaces the illustration automatically.
 
 The store ships with a **Snipcart integration already built in**, gated behind one
 constant. With no key it runs the **demo** cart/checkout (validates, clears the bag,
-shows a confirmation, **charges nothing** — cart in `localStorage` `aureum_cart_v1`).
+shows a confirmation, **charges nothing** — cart in `localStorage` `hourleigh_cart_v1`).
 Paste your key and add-to-cart, the cart, and checkout become **real Snipcart card
 checkout** — no other code changes.
 
@@ -143,6 +143,6 @@ processor is wired), and an **exit-intent + timed** first-order discount modal.
   imply affiliation with brands you don't represent.
 
 ## Rebranding
-`AUREUM` appears as the site name in the header, footer, watch-dial text, and
-titles. Find-and-replace `AUREUM` to rename. Colors/fonts are CSS variables at the
+`HOURLEIGH` appears as the site name in the header, footer, watch-dial text, and
+titles. Find-and-replace `HOURLEIGH` to rename. Colors/fonts are CSS variables at the
 top of the `<style>` block in `index.html`.

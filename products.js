@@ -1,5 +1,5 @@
 /* =============================================================================
-   AUREUM — Watch catalog (DATA ONLY)
+   HOURLEIGH — Watch catalog (DATA ONLY)
    -----------------------------------------------------------------------------
    This is the single source of truth for the storefront's products. To add or
    edit a watch, edit this file only — index.html reads from window.PRODUCTS.

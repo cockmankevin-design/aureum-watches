@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cockmankevin-design.github.io/aureum-watches/sitemap.xml
