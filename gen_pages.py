@@ -14,7 +14,7 @@ DOMAIN-CUTOVER.md).
 """
 import json, re, os, html
 
-BASE = "https://cockmankevin-design.github.io/aureum-watches"   # ← swap at domain cutover
+BASE = "https://hourleigh.com"   # live custom domain
 BRAND = "HOURLEIGH"
 
 # ---- parse products.js (it's JS, not JSON — normalize it) -------------------
