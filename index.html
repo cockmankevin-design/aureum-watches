@@ -725,10 +725,12 @@ const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
                  (real cards). One-time Snipcart dashboard step required —
                  see README "Going live with real payments".
 ---------------------------------------------------------------- */
-const SNIPCART_API_KEY = "";                       // ← e.g. "YjEx...your-public-key"
+const SNIPCART_API_KEY = "MWFjMzc4NGItNTI1OC00NDJlLWI0NDYtY2U4MzI3MTRiNzcyNjM5MTczNDUyMjQ2MTA1MTU4";   // Snipcart PUBLIC key
 const LIVE_CHECKOUT = !!SNIPCART_API_KEY;
 function loadSnipcart(){
   if(!LIVE_CHECKOUT) return;
+  // Snipcart v3 modern config (silences the SnipcartSettings warning)
+  window.SnipcartSettings = { publicApiKey: SNIPCART_API_KEY, loadStrategy: 'always', modalStyle: 'side', version: '3.7.1' };
   const css=document.createElement('link'); css.rel='stylesheet';
   css.href='https://cdn.snipcart.com/themes/v3.7.1/default/snipcart.css'; document.head.appendChild(css);
   const div=document.createElement('div'); div.id='snipcart';
