@@ -727,6 +727,7 @@ const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 ---------------------------------------------------------------- */
 const SNIPCART_API_KEY = "MWFjMzc4NGItNTI1OC00NDJlLWI0NDYtY2U4MzI3MTRiNzcyNjM5MTczNDUyMjQ2MTA1MTU4";   // Snipcart PUBLIC key
 const LIVE_CHECKOUT = !!SNIPCART_API_KEY;
+const SITE_BASE = "https://hourleigh.com";   // must match gen_pages.py BASE — Snipcart crawls /p/<id>.html to validate price
 function loadSnipcart(){
   if(!LIVE_CHECKOUT) return;
   // Snipcart v3 modern config (silences the SnipcartSettings warning)
@@ -742,8 +743,8 @@ function snipAdd(p,qty,variant){
   if(!window.Snipcart) return false;
   window.Snipcart.api.cart.items.add({
     id:p.id, name:p.name+(variant?` (${variant})`:''), price:p.price,
-    url:location.origin+location.pathname, quantity:qty||1,
-    image:(p.images&&p.images[0])||undefined, description:p.tagline
+    url:`${SITE_BASE}/p/${p.id}.html`, quantity:qty||1,   // crawlable page w/ matching snipcart def
+    image:(p.images&&p.images[0])?`${SITE_BASE}/${p.images[0]}`:undefined, description:p.tagline
   });
   return true;
 }
