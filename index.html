@@ -725,7 +725,7 @@ const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
                  (real cards). One-time Snipcart dashboard step required —
                  see README "Going live with real payments".
 ---------------------------------------------------------------- */
-const SNIPCART_API_KEY = "MWFjMzc4NGItNTI1OC00NDJlLWI0NDYtY2U4MzI3MTRiNzcyNjM5MTczNDUyMjQ2MTA1MTU4";   // Snipcart PUBLIC key
+const SNIPCART_API_KEY = "M2ZlMmI2YTUtNjBhNC00Mzk0LTkyNmMtZWUyMGY3NjdlNjgyNjM5MTczNDUyMjQ2MTA1MTU4";   // Snipcart LIVE PUBLIC key
 const LIVE_CHECKOUT = !!SNIPCART_API_KEY;
 const SITE_BASE = "https://hourleigh.com";   // must match gen_pages.py BASE — Snipcart crawls /p/<id>.html to validate price
 function loadSnipcart(){
