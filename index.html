@@ -447,6 +447,14 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .promo-band .btn:hover{background:transparent;color:var(--ivory)}
 @media(max-width:860px){ .promo-band-in{grid-template-columns:1fr;text-align:center}
   .promo-band p{margin-left:auto;margin-right:auto} }
+.offer-note{display:flex;align-items:center;gap:10px;font-size:.84rem;color:var(--ink-soft);
+  background:rgba(200,162,74,.09);border:1px solid var(--gold-soft);padding:11px 15px;margin:18px 0 4px}
+.offer-note.compact{font-size:.78rem;padding:10px 13px;margin:0 0 16px}
+.offer-note .gift{width:18px;height:18px;color:var(--gold);flex:none}
+.offer-note b{font-weight:600}
+.code-inline{font-family:var(--sans);font-weight:600;letter-spacing:.06em;color:var(--gold);font-size:inherit;
+  border:0;border-bottom:1px dashed var(--gold-line);background:none;cursor:pointer;padding:0}
+.code-inline:hover{color:var(--ink);border-color:var(--ink)}
 
 /* ============ Social proof / scarcity ============ */
 .cstars{display:flex;align-items:center;gap:7px;justify-content:center;margin:0 0 9px}
@@ -1154,6 +1162,14 @@ function getPromo(){
 }
 function promoDiscount(sub){ const p=getPromo(); return p ? Math.round(sub*p.pct/100) : 0; }
 
+/* Small reusable "20% off first order" reminder with a click-to-copy code. */
+function firstOrderNote(compact){
+  return `<div class="offer-note${compact?' compact':''}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" class="gift"><path d="M3 11l8-8 10 10-8 8z" stroke-width="1.2"/><circle cx="8.5" cy="8.5" r="1.4" stroke-width="1.2"/></svg>
+    <span><b>20% off your first order</b> — code <button type="button" class="code-inline" data-action="copy-code" data-code="HOURLEIGH20">HOURLEIGH20</button></span>
+  </div>`;
+}
+
 function updateCartUI(){
   const n=cartCount();
   const badge=$('#cartCount');
@@ -1206,6 +1222,7 @@ function renderDrawer(){
   foot.innerHTML=`
     <div class="drawer-sub"><span class="s">Subtotal</span><span class="v">${money(cartSubtotal())}</span></div>
     <p class="drawer-note">Shipping &amp; taxes calculated at checkout. Complimentary shipping applied.</p>
+    ${firstOrderNote(true)}
     <a href="/checkout" class="btn btn-block" data-action="checkout">Checkout</a>
     <a href="/cart" class="linkmore" data-action="cart-close" style="display:block;text-align:center;margin-top:18px;border:none">View full bag</a>`;
 }
@@ -1440,6 +1457,7 @@ function viewProduct(id){
           ${p.compareAt?`<span class="was">${money(p.compareAt)}</span>`:''}
           ${savings(p)>0?`<span class="off">Save ${savings(p)}%</span>`:''}
         </div>
+        ${firstOrderNote()}
         <p class="pd-blurb">${esc(p.blurb)}</p>
         ${variants}
         ${lowStock(p)?`<div class="pd-stock"><span class="dot"></span>Limited stock — only ${lowStock(p)} left at this price.</div>`:''}
