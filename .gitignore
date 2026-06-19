@@ -11,3 +11,6 @@ desktop.ini
 
 # private until domain cutover
 DOMAIN-CUTOVER.md
+
+# local dev-only GitHub Pages emulator (SPA 404 fallback testing)
+_ghpreview.py

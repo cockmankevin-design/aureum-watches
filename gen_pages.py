@@ -80,7 +80,7 @@ PAGE = """<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
-  <a class="brand" href="../#/">{brand}</a>
+  <a class="brand" href="/">{brand}</a>
   <div class="grid">
     <div class="photo"><img src="../{img}" alt="{name} — {tagline}"/></div>
     <div>
@@ -90,12 +90,12 @@ PAGE = """<!DOCTYPE html>
       <div class="price">${price}<span class="was">${compare}</span></div>
       {rating_html}
       <p class="blurb">{blurb}</p>
-      <a class="cta" href="../#/watch/{pid}">Shop this watch</a>
+      <a class="cta" href="/watch/{pid}">Shop this watch</a>
       <table>{specs_rows}</table>
     </div>
   </div>
   <div class="foot">Complimentary worldwide shipping · 2-year warranty · 30-day returns<br/>
-  <a href="../#/shop">Browse the full {brand} collection →</a></div>
+  <a href="/shop">Browse the full {brand} collection →</a></div>
 </div>
 <!-- Snipcart product definition: lets Snipcart validate price by crawling this page (price stays in sync with products.js) -->
 <div hidden class="snipcart-add-item"
