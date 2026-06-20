@@ -14,3 +14,6 @@ DOMAIN-CUTOVER.md
 
 # local dev-only GitHub Pages emulator (SPA 404 fallback testing)
 _ghpreview.py
+
+# private marketing content (internal working files, not for the public repo)
+marketing/
