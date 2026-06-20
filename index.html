@@ -1939,8 +1939,8 @@ function setupHeroTilt(){
     const py=(e.clientY-(r.top+r.height/2))/(r.height/2);
     if(raf) cancelAnimationFrame(raf);
     raf=requestAnimationFrame(()=>{
-      frame.style.transform=`perspective(1100px) rotateY(${px*6}deg) rotateX(${-py*6}deg)`;
-      if(img) img.style.transform=`translate(${px*-10}px, ${py*-10}px) scale(1.05)`;
+      frame.style.transform=`perspective(820px) rotateY(${px*14}deg) rotateX(${-py*14}deg)`;
+      if(img) img.style.transform=`translate(${px*-24}px, ${py*-24}px) scale(1.08)`;
     });
   });
   media.addEventListener('mouseleave',()=>{
