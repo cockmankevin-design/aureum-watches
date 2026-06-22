@@ -146,6 +146,13 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 /* ============ Reveal animation ============ */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
 .reveal.in{opacity:1;transform:none}
+.reveal-l{opacity:0;transform:translateX(-42px);transition:opacity 1s var(--ease),transform 1.1s var(--ease)}
+.reveal-r{opacity:0;transform:translateX(42px);transition:opacity 1s var(--ease),transform 1.1s var(--ease)}
+.reveal-zoom{opacity:0;transform:scale(.9);transition:opacity 1s var(--ease),transform 1.1s var(--ease)}
+.reveal-l.in,.reveal-r.in,.reveal-zoom.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal,.reveal-l,.reveal-r,.reveal-zoom{opacity:1!important;transform:none!important}}
+#scrollbar{position:fixed;top:0;left:0;height:3px;width:0;z-index:250;pointer-events:none;
+  background:linear-gradient(90deg,var(--gold-line),#e7d9b0);box-shadow:0 0 8px rgba(200,162,74,.5);transition:width .08s linear}
 
 /* ============ HERO ============ */
 .hero{position:relative;padding:clamp(40px,7vw,90px) 0 clamp(60px,9vw,120px)}
@@ -647,6 +654,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 <div class="grain"></div>
 
 <!-- Announcement -->
+<div id="scrollbar"></div>
 <div class="announce"><span id="announce">20% off your first order — use code HOURLEIGH20 at checkout</span></div>
 
 <!-- Header -->
@@ -1407,7 +1415,7 @@ function viewHome(){
       <p>No counterfeits, no borrowed logos, no pretence. Just genuinely handsome watches, honestly priced and backed by a real two-year warranty.</p>
       <div style="margin-top:30px"><a href="/about" class="linkmore" style="color:var(--ivory);border-color:var(--ivory)">Read Our Story →</a></div>
     </div>
-    <div class="story-stats reveal" style="transition-delay:120ms">
+    <div class="story-stats reveal-zoom" style="transition-delay:120ms">
       <div class="stat"><b>12</b><span>Curated pieces, no filler</span></div>
       <div class="stat"><b>2yr</b><span>Warranty included</span></div>
       <div class="stat"><b>30d</b><span>No-question returns</span></div>
@@ -1416,8 +1424,8 @@ function viewHome(){
   </div></div></section>
 
   <section class="sec"><div class="wrap"><div class="edit-grid">
-    <div class="edit-media reveal">${media(byId('marchesa-mop'),3)}</div>
-    <div class="edit-copy reveal" style="transition-delay:120ms">
+    <div class="edit-media reveal-l">${media(byId('marchesa-mop'),3)}</div>
+    <div class="edit-copy reveal-r" style="transition-delay:120ms">
       <span class="eyebrow">For Her</span>
       <h2 class="h2">Light at the wrist.</h2>
       <p class="muted" style="margin-bottom:1.4em">Mother-of-pearl that shifts with the light, crystal-set markers, and a two-tone bracelet that flatters every cuff. The women's collection is built around one idea: effortless, expensive-looking ease.</p>
@@ -1895,7 +1903,7 @@ function render(){
   setActiveNav(path);
   if(top) window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
   observeReveals();
-  if(path==='/'||path==='') setupHeroMotion(); else if(heroRAF){ cancelAnimationFrame(heroRAF); heroRAF=0; }
+  if(path==='/'||path===''){ setupHeroMotion(); animateStats(); } else if(heroRAF){ cancelAnimationFrame(heroRAF); heroRAF=0; }
   if(path.startsWith('/watch/')){ const sp=byId(path.split('/')[2]); sp ? setupSticky(sp) : hideSticky(); }
   else hideSticky();
   trackRoute(path);
@@ -1939,9 +1947,9 @@ function setupHeroMotion(){
   let t=0;
   function loop(){
     t += 0.016;
-    const floatY = Math.sin(t*1.05) * 9;                 // gentle levitation (no cursor needed)
-    const swayZ  = Math.sin(t*0.70) * 1.4;               // organic roll
-    const ph     = window.scrollY * 0.16 * Math.PI/180;  // scroll position -> phase
+    const floatY = Math.sin(t*1.3) * 9;                  // gentle levitation (no cursor needed)
+    const swayZ  = Math.sin(t*0.9) * 1.4;                // organic roll
+    const ph     = window.scrollY * 0.19 * Math.PI/180;  // scroll position -> phase
     const rotY   = Math.sin(ph) * 22;                    // circular 3D turn as you scroll
     const rotX   = Math.cos(ph) * 13 - 3;
     frame.style.transform =
@@ -1961,13 +1969,32 @@ function setupHeroMotion(){
 ---------------------------------------------------------------- */
 let io;
 function observeReveals(){
-  const els=app.querySelectorAll('.reveal:not(.in)');
+  const els=app.querySelectorAll('.reveal:not(.in),.reveal-l:not(.in),.reveal-r:not(.in),.reveal-zoom:not(.in)');
   if(!('IntersectionObserver'in window)){ els.forEach(e=>e.classList.add('in')); return; }
   if(io) io.disconnect();
   io=new IntersectionObserver((entries)=>{
     entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
   },{threshold:.12, rootMargin:'0px 0px -8% 0px'});
   els.forEach(e=>io.observe(e));
+}
+
+/* Count-up animation for the story-band stats (fires when scrolled into view) */
+function animateStats(){
+  const box=app.querySelector('.story-stats');
+  if(!box || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const nums=[...box.querySelectorAll('.stat b')];
+  let done=false;
+  const so=new IntersectionObserver((es)=>{ es.forEach(en=>{
+    if(en.isIntersecting && !done){ done=true; so.disconnect();
+      nums.forEach(el=>{
+        const m=el.textContent.trim().match(/^(\d+)(.*)$/); if(!m) return;
+        const target=+m[1], suf=m[2], dur=1100, t0=performance.now();
+        (function step(now){ const p=Math.min((now-t0)/dur,1), e=1-Math.pow(1-p,3);
+          el.textContent=Math.round(target*e)+suf; if(p<1) requestAnimationFrame(step); })(t0);
+      });
+    }
+  }); },{threshold:.4});
+  so.observe(box);
 }
 
 /* ---------------------------------------------------------------
@@ -2111,7 +2138,12 @@ document.addEventListener('change',(e)=>{
 
 // header shadow on scroll
 const head=$('#head');
-window.addEventListener('scroll',()=>{ head.classList.toggle('scrolled', window.scrollY>10); },{passive:true});
+const sbar=$('#scrollbar');
+window.addEventListener('scroll',()=>{
+  head.classList.toggle('scrolled', window.scrollY>10);
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  if(sbar) sbar.style.width=(h>0?(window.scrollY/h*100):0)+'%';
+},{passive:true});
 
 // announcement rotator
 const ANN=['20% off your first order — use code HOURLEIGH20 at checkout',
