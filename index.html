@@ -909,7 +909,7 @@ const TIKTOK_PIXEL_ID = "";  // TikTok Events Manager → your Pixel ID
    to receive review submissions by email. If left empty, the form opens a
    pre-filled email draft to the store instead — either way every review is
    moderated by you before you add it to reviews.js. */
-const REVIEW_FORM_ENDPOINT = "";
+const REVIEW_FORM_ENDPOINT = "https://formspree.io/f/maqgndra";
 const STORE_EMAIL = "hourleighwatches@gmail.com";
 function loadPixels(){
   if(META_PIXEL_ID){
@@ -2349,7 +2349,10 @@ document.addEventListener('submit',(e)=>{
       f.reset(); f.querySelectorAll('.rw-star').forEach(b=>b.classList.remove('on')); f.rating.value=0; };
     const payload={ product:(p?p.name:f.dataset.pid)+' ('+f.dataset.pid+')', rating:rating+' / 5', name, email, title, review:body };
     if(REVIEW_FORM_ENDPOINT){
-      fetch(REVIEW_FORM_ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:new FormData(f)})
+      const fd=new FormData(f);
+      fd.append('product', payload.product);          // so you know which watch the review is for
+      fd.append('_subject', 'New review: '+(p?p.name:f.dataset.pid)+' ('+rating+'/5)');
+      fetch(REVIEW_FORM_ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:fd})
         .then(r=>{ if(!r.ok) throw 0; done(); })
         .catch(()=>fail('Could not send right now — please email '+STORE_EMAIL+'.'));
     } else {
