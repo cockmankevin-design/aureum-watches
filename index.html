@@ -619,6 +619,32 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .lightbox-close:hover{border-color:#fff;background:rgba(255,255,255,.1)}
 .lightbox-close svg{width:18px;height:18px}
 
+/* ============ Anchoring savings line (PDP) ============ */
+.pd-save{font-size:.88rem;font-weight:500;color:var(--sale);letter-spacing:.01em;margin:-2px 0 16px}
+.pd-save b{font-weight:600}
+
+/* ============ Dispatch / delivery urgency (PDP) ============ */
+.dispatch{display:flex;align-items:center;gap:9px;font-size:.84rem;color:var(--ink-soft);margin:2px 0 20px;
+  background:rgba(200,162,74,.07);border:1px solid var(--gold-soft);padding:11px 14px}
+.dispatch svg{width:18px;height:18px;color:var(--gold);flex:none}
+.dispatch b{color:var(--ink);font-weight:600}
+
+/* ============ His & Hers / Pair & Save ============ */
+.pairs{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:clamp(20px,3vw,34px)}
+.pair-card{border:1px solid var(--line);background:var(--paper);padding:clamp(20px,3vw,30px);
+  display:flex;flex-direction:column}
+.pair-media{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.pair-thumb{flex:1;aspect-ratio:4/5;background:#fff;border:1px solid var(--line-soft);overflow:hidden;transition:.5s var(--ease)}
+.pair-thumb img{width:100%;height:100%;object-fit:contain;padding:8%}
+.pair-thumb svg{width:100%;height:100%;object-fit:cover}
+.pair-card:hover .pair-thumb{border-color:var(--line)}
+.pair-plus{font-family:var(--serif);font-size:1.7rem;color:var(--gold);flex:none}
+.pair-info h3{font-size:1.5rem;margin-bottom:6px}
+.pair-info .muted{font-size:.9rem;margin-bottom:16px}
+.pair-price{display:flex;align-items:baseline;gap:10px;margin-bottom:18px}
+.pair-card .btn{width:100%;justify-content:center}
+.pair-foot{font-size:.78rem;color:var(--muted);text-align:center;margin-top:13px}
+
 /* ============ Responsive ============ */
 @media(max-width:1000px){
   .pgrid{grid-template-columns:repeat(3,1fr)}
@@ -1246,6 +1272,69 @@ function firstOrderNote(compact){
   </div>`;
 }
 
+/* Honest dispatch + delivery-estimate line for product pages.
+   Countdown runs to a 3 PM daily order cutoff; delivery window matches the
+   stated 1–2 day dispatch + 5–9 day shipping policy (no same-day promises). */
+function dispatchLine(){
+  const now=new Date();
+  const cutoff=new Date(now); cutoff.setHours(15,0,0,0);
+  const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const lo=new Date(now); lo.setDate(lo.getDate()+5);
+  const hi=new Date(now); hi.setDate(hi.getDate()+9);
+  let lead;
+  if(now<cutoff){
+    const ms=cutoff-now, h=Math.floor(ms/3.6e6), m=Math.floor((ms%3.6e6)/6e4);
+    lead=`Order within <b>${h}h ${m}m</b> → ships within 1–2 business days`;
+  } else {
+    lead='Ships within 1–2 business days';
+  }
+  return `<div class="dispatch">${ICONS.truck}<span>${lead} · estimated delivery <b>${fmt(lo)}–${fmt(hi)}</b></span></div>`;
+}
+
+/* ---- His & Hers / Pair & Save bundles ----
+   Curated two-piece sets. "Save %" is anchored to the same comparable-retail
+   figures used everywhere else; the HOURLEIGH20 code stacks on top at checkout. */
+const BUNDLES=[
+  { title:'His &amp; Hers · The Classic Pair', ids:['regent','marchesa-mop'],
+    note:'His two-tone chronograph, her mother-of-pearl day-date — a matched set in the same warm two-tone finish.' },
+  { title:'His &amp; Hers · The Modern Pair', ids:['monarch','serpentine'],
+    note:'Integrated-bracelet sport for him, an open-heart automatic for her — the contemporary set.' }
+];
+function pairsSection(){
+  const cards=BUNDLES.map(b=>{
+    const items=b.ids.map(byId).filter(Boolean);
+    if(items.length<2) return '';
+    const now=items.reduce((s,p)=>s+p.price,0);
+    const was=items.reduce((s,p)=>s+(p.compareAt||p.price),0);
+    const off=Math.round((1-now/was)*100);
+    return `<div class="pair-card reveal">
+      <div class="pair-media">
+        ${items.map(p=>`<a class="pair-thumb" href="/watch/${p.id}">${media(p,0,'card')}</a>`).join('<span class="pair-plus">+</span>')}
+      </div>
+      <div class="pair-info">
+        <h3>${b.title}</h3>
+        <p class="muted">${esc(b.note)}</p>
+        <div class="pair-price">
+          <span class="price-now">${money(now)}</span>
+          <span class="price-was">${money(was)}</span>
+          ${off>0?`<span class="price-off">Save ${off}%</span>`:''}
+        </div>
+        <button class="btn" data-action="addpair" data-ids="${b.ids.join(',')}">Add the Pair to Bag</button>
+        <div class="pair-foot">Add <button type="button" class="code-inline" data-action="copy-code" data-code="HOURLEIGH20">HOURLEIGH20</button> at checkout for an extra 20% off the set.</div>
+      </div>
+    </div>`;
+  }).join('');
+  if(!cards) return '';
+  return `<section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Give Together</span>
+      <h2 class="h2">His &amp; Hers</h2>
+      <p class="muted">Curated pairs that look made for each other — bought together, saved together.</p>
+    </div>
+    <div class="pairs">${cards}</div>
+  </div></section>`;
+}
+
 function updateCartUI(){
   const n=cartCount();
   const badge=$('#cartCount');
@@ -1433,6 +1522,8 @@ function viewHome(){
     </div>
   </div></div></section>
 
+  ${pairsSection()}
+
   ${bestsellers.length?`<section class="sec" style="padding-top:0"><div class="wrap">
     <div class="sec-head reveal">
       <span class="eyebrow">House Favourites</span>
@@ -1501,8 +1592,10 @@ function viewShop(filter, sort, price){
         </select>
       </div>
     </div>
-    <div class="pgrid" style="padding-bottom:90px">${list.length?list.map((p,i)=>card(p,i*50)).join(''):'<p class="muted" style="grid-column:1/-1;text-align:center;padding:60px 0">No pieces match these filters.</p>'}</div>
-  </div>`;
+    <div class="pgrid" style="padding-bottom:64px">${list.length?list.map((p,i)=>card(p,i*50)).join(''):'<p class="muted" style="grid-column:1/-1;text-align:center;padding:60px 0">No pieces match these filters.</p>'}</div>
+  </div>
+  ${trustStrip()}
+  <div style="height:60px"></div>`;
 }
 
 function viewProduct(id){
@@ -1534,10 +1627,12 @@ function viewProduct(id){
           ${p.compareAt?`<span class="was">${money(p.compareAt)}</span>`:''}
           ${savings(p)>0?`<span class="off">Save ${savings(p)}%</span>`:''}
         </div>
+        ${p.compareAt&&savings(p)>0?`<div class="pd-save">You save <b>${money(p.compareAt-p.price)} (${savings(p)}%)</b> vs. comparable retail.</div>`:''}
         ${firstOrderNote()}
         <p class="pd-blurb">${esc(p.blurb)}</p>
         ${variants}
         ${lowStock(p)?`<div class="pd-stock"><span class="dot"></span>Limited stock — only ${lowStock(p)} left at this price.</div>`:''}
+        ${dispatchLine()}
         <div class="buy-row">
           <div class="qty" data-qtybox>
             <button data-qty="dec" aria-label="Decrease"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14" stroke-width="2"/></svg></button>
@@ -1568,8 +1663,8 @@ function viewProduct(id){
       </div>
       <div class="rev-grid">
         <div class="rev-card reveal">
-          <div class="rev-top"><span class="rev-name">Genuine maker <span class="vf">${esc(p.specs.Maker||'Named')}</span></span></div>
-          <p>A real ${esc(p.specs.Maker||'manufacturer')} timepiece, sold under our collection name. The maker and full specifications are listed openly — no counterfeits, no borrowed logos.</p>
+          <div class="rev-top"><span class="rev-name">Genuine article <span class="vf">Authentic</span></span></div>
+          <p>A genuine ${/Automatic/.test(p.specs.Movement)?'automatic mechanical':'Japanese-quartz'} timepiece — real steel, real crystal, a real movement — sold under the HOURLEIGH name with full specifications listed openly. No counterfeits, no borrowed logos.</p>
         </div>
         <div class="rev-card reveal" style="transition-delay:80ms">
           <div class="rev-top"><span class="rev-name">Honest photos</span></div>
@@ -2064,6 +2159,15 @@ document.addEventListener('click',(e)=>{
     pixelTrack('AddToCart',{content_ids:[p.id],content_type:'product',content_name:p.name,value:p.price,currency:'USD',num_items:1});
     if(LIVE_CHECKOUT){ snipAdd(p,1,null); toast(`${p.name} added to your bag`); }
     else { addToCart(id,1,null); toast(`${p.name} added to your bag`); }
+  }
+  else if(a==='addpair'){
+    const ids=(el.dataset.ids||'').split(',').filter(Boolean);
+    ids.forEach(id=>{ const p=byId(id); if(!p) return;
+      pixelTrack('AddToCart',{content_ids:[p.id],content_type:'product',content_name:p.name,value:p.price,currency:'USD',num_items:1});
+      if(LIVE_CHECKOUT) snipAdd(p,1,null); else addToCart(id,1,null);
+    });
+    toast('Pair added to your bag');
+    if(LIVE_CHECKOUT) openSnipCart(); else openCart();
   }
   else if(a==='checkout'){ e.preventDefault(); goCheckout(); }
   else if(a==='express'){ goCheckout(); }
