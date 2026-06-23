@@ -518,6 +518,37 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .rev-stars{color:var(--gold-line);font-size:.82rem;letter-spacing:1px;margin-bottom:10px}
 .rev-card p{font-size:.92rem;color:var(--ink-soft);font-weight:300;line-height:1.55}
 .rev-meta{margin-top:14px;font-size:.7rem;color:var(--muted);letter-spacing:.04em}
+.rev-top{align-items:flex-start}
+.rev-card .rev-meta{margin-top:0;flex:none;padding-left:12px}
+.rev-title{display:block;font-family:var(--serif);font-size:1.1rem;font-weight:500;margin-bottom:6px}
+/* Rating breakdown bars */
+.rev-breakdown{max-width:380px;margin:0 0 30px;display:flex;flex-direction:column;gap:7px}
+.rb-row{display:flex;align-items:center;gap:12px;font-size:.78rem;color:var(--muted)}
+.rb-n{width:26px;flex:none;color:var(--ink-soft)}
+.rb-bar{flex:1;height:7px;background:var(--ivory-deep);border:1px solid var(--line-soft);overflow:hidden}
+.rb-bar span{display:block;height:100%;background:var(--gold-line)}
+.rb-c{width:24px;text-align:right;flex:none}
+/* Honest empty state */
+.rev-empty{background:var(--paper);border:1px dashed var(--gold-line);padding:22px 24px;margin-bottom:24px}
+.rev-empty p{font-size:.95rem;color:var(--ink-soft);font-weight:300}
+/* Write-a-review form */
+.rev-write{margin-top:30px;border:1px solid var(--line);background:var(--paper)}
+.rev-write summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  padding:18px 24px;font-family:var(--sans);font-weight:500;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}
+.rev-write summary::-webkit-details-marker{display:none}
+.rev-write summary svg{width:16px;height:16px;transition:.4s var(--ease)}
+.rev-write[open] summary svg{transform:rotate(180deg)}
+.rev-write form{padding:4px 24px 26px}
+.rw-row{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.rw-label{font-size:.74rem;letter-spacing:.06em;color:var(--muted)}
+.rw-stars{display:inline-flex;gap:4px}
+.rw-star{font-size:1.5rem;line-height:1;color:var(--line);transition:.15s var(--ease)}
+.rw-star:hover,.rw-star.on{color:var(--gold-line)}
+.rev-write textarea{width:100%;border:1px solid var(--line);background:var(--ivory);padding:13px 15px;outline:none;
+  resize:vertical;transition:.3s var(--ease)}
+.rev-write textarea:focus,.rev-write input:focus{border-color:var(--ink)}
+.rev-write .btn{margin-top:6px}
+.rev-write .formnote{text-align:left}
 
 /* ============ Shop price chips (extra filter row) ============ */
 .shop-bar .chips.price .chip{font-size:.68rem}
@@ -816,10 +847,12 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 </div>
 
 <script src="products.js"></script>
+<script src="reviews.js"></script>
 <script>
 (function(){
 "use strict";
 const PRODUCTS = window.PRODUCTS || [];
+const REVIEWS = window.REVIEWS || {};
 const byId = id => PRODUCTS.find(p => p.id === id);
 const $ = s => document.querySelector(s);
 const app = $('#app');
@@ -871,6 +904,13 @@ function goCheckout(){ pixelTrack('InitiateCheckout',{value:cartSubtotal(),curre
 ---------------------------------------------------------------- */
 const META_PIXEL_ID = "";    // Meta Events Manager → Data sources → your Pixel ID (digits)
 const TIKTOK_PIXEL_ID = "";  // TikTok Events Manager → your Pixel ID
+
+/* Review submissions. Optional: paste a Formspree endpoint (https://formspree.io/f/xxxx)
+   to receive review submissions by email. If left empty, the form opens a
+   pre-filled email draft to the store instead — either way every review is
+   moderated by you before you add it to reviews.js. */
+const REVIEW_FORM_ENDPOINT = "";
+const STORE_EMAIL = "hourleighwatches@gmail.com";
 function loadPixels(){
   if(META_PIXEL_ID){
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -1234,6 +1274,97 @@ function starRow(rating){
   for(let i=1;i<=5;i++) s+= i<=full ? '★' : '☆';
   return s;
 }
+
+/* ---- First-party customer reviews (window.REVIEWS, from reviews.js) ----
+   Real, self-hosted reviews. Aggregates/stars render ONLY for products that
+   actually have reviews — never fabricated. */
+function getReviews(id){ const r=REVIEWS[id]; return Array.isArray(r)?r.slice():[]; }
+function reviewAgg(id){
+  const rv=getReviews(id); if(!rv.length) return null;
+  const sum=rv.reduce((s,r)=>s+(+r.rating||0),0);
+  return { count:rv.length, avg:Math.round(sum/rv.length*10)/10 };
+}
+/* One rating line for cards & the PDP title area.
+   Priority: real customer reviews → else the honest maker marketplace average → nothing. */
+function ratingLine(p, ctx){
+  const a=reviewAgg(p.id);
+  if(a){
+    const label = a.count===1 ? '1 review' : `${a.count} reviews`;
+    if(ctx==='pd') return `<div class="pd-rating"><span class="st">${starRow(a.avg)}</span><span class="ct">${a.avg.toFixed(1)} · <a href="#reviews">${label}</a></span></div>`;
+    return `<div class="cstars"><span class="st">${starRow(a.avg)}</span> <span class="ct">${a.avg.toFixed(1)} (${a.count})</span></div>`;
+  }
+  if(p.makerRating){
+    if(ctx==='pd') return `<div class="pd-rating"><span class="st">${starRow(p.makerRating)}</span><span class="ct">${p.makerRating} · <a href="#reviews">maker's marketplace average</a></span></div>`;
+    return `<div class="cstars"><span class="st">${starRow(p.makerRating)}</span> <span class="ct">${p.makerRating} maker rating</span></div>`;
+  }
+  return '';
+}
+
+function revDate(d){ try{ return new Date(d+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }catch(_){ return d||''; } }
+/* Full PDP reviews section: aggregate + breakdown + cards when real reviews
+   exist; an honest "be the first" state (no fake stars) otherwise. Always ends
+   with the write-a-review form. */
+function reviewsBlock(p){
+  const rv=getReviews(p.id), a=reviewAgg(p.id);
+  let breakdown='';
+  if(a){
+    const counts=[5,4,3,2,1].map(n=>rv.filter(r=>Math.round(+r.rating)===n).length);
+    breakdown=`<div class="rev-breakdown reveal">${[5,4,3,2,1].map((n,i)=>{
+      const c=counts[i], pct=a.count?Math.round(c/a.count*100):0;
+      return `<div class="rb-row"><span class="rb-n">${n}★</span><span class="rb-bar"><span style="width:${pct}%"></span></span><span class="rb-c">${c}</span></div>`;
+    }).join('')}</div>`;
+  }
+  const cards = rv.length ? `<div class="rev-grid">${rv.map((r,i)=>`
+    <div class="rev-card reveal"${i?` style="transition-delay:${Math.min(i,3)*80}ms"`:''}>
+      <div class="rev-top">
+        <span class="rev-name">${esc(r.name||'Verified buyer')}${r.verified?' <span class="vf">Verified</span>':''}</span>
+        <span class="rev-meta">${esc(revDate(r.date))}</span>
+      </div>
+      <div class="rev-stars">${starRow(+r.rating||0)}</div>
+      ${r.title?`<b class="rev-title">${esc(r.title)}</b>`:''}
+      <p>${esc(r.body||'')}</p>
+    </div>`).join('')}</div>` : `
+    <div class="rev-empty reveal">
+      <p>No reviews yet for ${esc(p.name)}. Own this piece? Share your experience below — your review helps the next buyer decide.</p>
+    </div>
+    <div class="rev-grid">
+      <div class="rev-card reveal"><div class="rev-top"><span class="rev-name">Genuine article <span class="vf">Authentic</span></span></div><p>A genuine ${/Automatic/.test(p.specs.Movement)?'automatic mechanical':'Japanese-quartz'} timepiece — real steel, real crystal, a real movement — sold under the HOURLEIGH name with full specifications listed openly.</p></div>
+      <div class="rev-card reveal" style="transition-delay:80ms"><div class="rev-top"><span class="rev-name">Honest photos</span></div><p>Every photo shows the exact model that ships. What you see on this page is what arrives in the box.</p></div>
+      <div class="rev-card reveal" style="transition-delay:160ms"><div class="rev-top"><span class="rev-name">Backed by us</span></div><p>2-year warranty, 30-day no-question returns, and tracked, insured shipping on every order.</p></div>
+    </div>`;
+  return `<div class="reviews" id="reviews">
+    <div class="reviews-head reveal">
+      <div><span class="eyebrow">Customer Reviews</span><h2>${a?'What owners say':'Be the first to review'}</h2></div>
+      ${a?`<div class="agg"><b>${a.avg.toFixed(1)}</b> / 5 · ${a.count===1?'1 review':a.count+' reviews'}</div>`:''}
+    </div>
+    ${breakdown}
+    ${cards}
+    ${reviewForm(p)}
+  </div>`;
+}
+function reviewForm(p){
+  return `<details class="rev-write reveal">
+    <summary><span>Write a review</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6" stroke-width="1.5"/></svg></summary>
+    <form data-form="review" data-pid="${p.id}" novalidate>
+      <div class="rw-row">
+        <span class="rw-label">Your rating</span>
+        <div class="rw-stars" data-rw-stars>
+          ${[1,2,3,4,5].map(n=>`<button type="button" class="rw-star" data-val="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}
+        </div>
+        <input type="hidden" name="rating" value="0"/>
+      </div>
+      <div class="frow">
+        <div class="field"><label>Your name</label><input name="name" placeholder="e.g. James R." required/></div>
+        <div class="field"><label>Email (not published)</label><input name="email" type="email" placeholder="you@email.com" required/></div>
+      </div>
+      <div class="field"><label>Headline</label><input name="title" placeholder="Sum it up in a few words"/></div>
+      <div class="field"><label>Your review</label><textarea name="body" rows="4" placeholder="How's the fit, finish and value? Would you recommend it?" required></textarea></div>
+      <button type="submit" class="btn">Submit Review</button>
+      <div class="formnote" data-note="review"></div>
+    </form>
+  </details>`;
+}
+
 /* low-stock helper — shows only when a REAL stock count is set on a product */
 const lowStock = p => (typeof p.stock==='number' && p.stock>0 && p.stock<=8) ? p.stock : null;
 
@@ -1407,7 +1538,7 @@ function card(p, delay){
       <div class="gender">${p.gender==='men'?"Men's":"Women's"}</div>
       <h3>${esc(p.name)}</h3>
       <div class="tl">${esc(p.tagline)}</div>
-      ${p.makerRating?`<div class="cstars"><span class="st">${starRow(p.makerRating)}</span> <span class="ct">${p.makerRating} maker rating</span></div>`:''}
+      ${ratingLine(p)}
       <div class="price-row">
         <span class="price-now">${money(p.price)}</span>
         ${p.compareAt?`<span class="price-was">${money(p.compareAt)}</span>`:''}
@@ -1621,7 +1752,7 @@ function viewProduct(id){
         <span class="eyebrow">${p.gender==='men'?"Men's":"Women's"} · ${esc(p.dialColor)}</span>
         <h1>${esc(p.name)}</h1>
         <div class="tl">${esc(p.tagline)}</div>
-        ${p.makerRating?`<div class="pd-rating"><span class="st">${starRow(p.makerRating)}</span><span class="ct">${p.makerRating} · <a href="#reviews">maker's marketplace average</a></span></div>`:''}
+        ${ratingLine(p,'pd')}
         <div class="pd-price">
           <span class="now">${money(p.price)}</span>
           ${p.compareAt?`<span class="was">${money(p.compareAt)}</span>`:''}
@@ -1656,26 +1787,7 @@ function viewProduct(id){
         </div>
       </div>
     </div>
-    <div class="reviews" id="reviews">
-      <div class="reviews-head reveal">
-        <div><span class="eyebrow">Provenance</span><h2>What you're buying</h2></div>
-        ${p.makerRating?`<div class="agg"><b>${p.makerRating}</b> / 5 · maker's marketplace average for this model</div>`:''}
-      </div>
-      <div class="rev-grid">
-        <div class="rev-card reveal">
-          <div class="rev-top"><span class="rev-name">Genuine article <span class="vf">Authentic</span></span></div>
-          <p>A genuine ${/Automatic/.test(p.specs.Movement)?'automatic mechanical':'Japanese-quartz'} timepiece — real steel, real crystal, a real movement — sold under the HOURLEIGH name with full specifications listed openly. No counterfeits, no borrowed logos.</p>
-        </div>
-        <div class="rev-card reveal" style="transition-delay:80ms">
-          <div class="rev-top"><span class="rev-name">Honest photos</span></div>
-          <p>Every photo shows the exact model that ships. What you see on this page is what arrives in the box.</p>
-        </div>
-        <div class="rev-card reveal" style="transition-delay:160ms">
-          <div class="rev-top"><span class="rev-name">Backed by us</span></div>
-          <p>2-year movement &amp; finish warranty, 30-day no-question returns, and tracked, insured shipping on every order.</p>
-        </div>
-      </div>
-    </div>
+    ${reviewsBlock(p)}
   </div></section>
 
   <section class="sec" style="background:var(--ivory-deep)"><div class="wrap">
@@ -2122,6 +2234,11 @@ document.addEventListener('click',(e)=>{
   const q=e.target.closest('[data-qty]');
   if(q){ const box=q.closest('[data-qtybox]'); const span=box.querySelector('[data-qtyval]');
     let v=parseInt(span.textContent,10); v=q.dataset.qty==='inc'?v+1:Math.max(1,v-1); span.textContent=v; return; }
+  // review star picker
+  const rs=e.target.closest('.rw-star');
+  if(rs){ const box=rs.closest('[data-rw-stars]'); const val=+rs.dataset.val;
+    box.parentElement.querySelector('input[name="rating"]').value=val;
+    box.querySelectorAll('.rw-star').forEach(b=>b.classList.toggle('on',+b.dataset.val<=val)); return; }
   // variant select
   const vo=e.target.closest('[data-variant]');
   if(vo){ vo.parentElement.querySelectorAll('.vopt').forEach(b=>b.classList.remove('active')); vo.classList.add('active'); return; }
@@ -2216,6 +2333,31 @@ document.addEventListener('submit',(e)=>{
     setCart([]);             // clear bag (demo)
     try{localStorage.removeItem('hourleigh_code');}catch(_){ }
     go('/confirmation');
+  }
+  if(f.dataset.form==='review'){
+    e.preventDefault();
+    const note=f.querySelector('[data-note="review"]');
+    const rating=+f.rating.value, name=f.name.value.trim(), email=f.email.value.trim(), body=f.body.value.trim();
+    const title=f.title.value.trim();
+    const fail=m=>{ if(note){ note.style.color='var(--sale)'; note.textContent=m; } };
+    if(!rating){ return fail('Please choose a star rating.'); }
+    if(!name){ return fail('Please add your name.'); }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ return fail('Please enter a valid email.'); }
+    if(!body){ return fail('Please write a few words about the watch.'); }
+    const p=byId(f.dataset.pid);
+    const done=()=>{ if(note){ note.style.color='var(--gold)'; note.textContent='Thank you — your review has been sent for verification and will appear once approved. ✦'; }
+      f.reset(); f.querySelectorAll('.rw-star').forEach(b=>b.classList.remove('on')); f.rating.value=0; };
+    const payload={ product:(p?p.name:f.dataset.pid)+' ('+f.dataset.pid+')', rating:rating+' / 5', name, email, title, review:body };
+    if(REVIEW_FORM_ENDPOINT){
+      fetch(REVIEW_FORM_ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:new FormData(f)})
+        .then(r=>{ if(!r.ok) throw 0; done(); })
+        .catch(()=>fail('Could not send right now — please email '+STORE_EMAIL+'.'));
+    } else {
+      const subj=encodeURIComponent('New review: '+(p?p.name:f.dataset.pid)+' ('+rating+'/5)');
+      const lines=['Product: '+payload.product,'Rating: '+payload.rating,'Name: '+name,'Email: '+email,'Headline: '+title,'','Review:',body];
+      window.location.href='mailto:'+STORE_EMAIL+'?subject='+subj+'&body='+encodeURIComponent(lines.join('\n'));
+      done();
+    }
   }
   if(f.dataset.form==='promo'){
     e.preventDefault();
