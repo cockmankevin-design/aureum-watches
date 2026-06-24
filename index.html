@@ -921,18 +921,18 @@ const TIKTOK_PIXEL_ID = "";  // TikTok Events Manager → your Pixel ID
 const REVIEW_FORM_ENDPOINT = "https://formspree.io/f/maqgndra";
 const STORE_EMAIL = "hourleighwatches@gmail.com";
 
-/* Email list (newsletter + welcome-offer popup). Paste your ESP's embedded-form
-   action URL here — e.g. MailerLite's "Subscribe API"/embedded form URL that
-   looks like https://assets.mailerlite.com/jsonp/<account>/forms/<form>/subscribe.
-   Empty = captures nothing yet (forms still show their friendly message). */
-const EMAIL_SIGNUP_ENDPOINT = "";
+/* Email list — MailerLite embedded-form (jsonp) subscribe endpoint for the
+   "HOURLEIGH" form. Both the footer signup and the welcome popup POST here;
+   double opt-in is on, so subscribers confirm via email. Group: Newsletter
+   Subscribers. To change ESP, swap this URL + the field names below. */
+const EMAIL_SIGNUP_ENDPOINT = "https://assets.mailerlite.com/jsonp/2468418/forms/191172945969678280/subscribe";
 function subscribeEmail(email, source){
   if(!EMAIL_SIGNUP_ENDPOINT) return Promise.resolve(false);
   const fd=new FormData();
-  fd.append('email', email);
-  fd.append('fields[email]', email);   // MailerLite field naming
-  if(source) fd.append('source', source);
-  // no-cors: the POST reaches the ESP even though we can't read its response
+  fd.append('fields[email]', email);   // MailerLite email field
+  fd.append('ml-submit', '1');
+  fd.append('anticsrf', 'true');
+  // no-cors: the POST reaches MailerLite even though we can't read its response
   return fetch(EMAIL_SIGNUP_ENDPOINT, { method:'POST', mode:'no-cors', body:fd })
     .then(()=>true).catch(()=>false);
 }
