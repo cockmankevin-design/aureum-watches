@@ -920,6 +920,22 @@ const TIKTOK_PIXEL_ID = "";  // TikTok Events Manager → your Pixel ID
    moderated by you before you add it to reviews.js. */
 const REVIEW_FORM_ENDPOINT = "https://formspree.io/f/maqgndra";
 const STORE_EMAIL = "hourleighwatches@gmail.com";
+
+/* Email list (newsletter + welcome-offer popup). Paste your ESP's embedded-form
+   action URL here — e.g. MailerLite's "Subscribe API"/embedded form URL that
+   looks like https://assets.mailerlite.com/jsonp/<account>/forms/<form>/subscribe.
+   Empty = captures nothing yet (forms still show their friendly message). */
+const EMAIL_SIGNUP_ENDPOINT = "";
+function subscribeEmail(email, source){
+  if(!EMAIL_SIGNUP_ENDPOINT) return Promise.resolve(false);
+  const fd=new FormData();
+  fd.append('email', email);
+  fd.append('fields[email]', email);   // MailerLite field naming
+  if(source) fd.append('source', source);
+  // no-cors: the POST reaches the ESP even though we can't read its response
+  return fetch(EMAIL_SIGNUP_ENDPOINT, { method:'POST', mode:'no-cors', body:fd })
+    .then(()=>true).catch(()=>false);
+}
 function loadPixels(){
   if(META_PIXEL_ID){
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
@@ -2328,6 +2344,7 @@ document.addEventListener('submit',(e)=>{
     const email=f.email.value.trim();
     const note=document.querySelector('[data-note="newsletter"]');
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ note.textContent='Please enter a valid email.'; note.style.color='var(--sale)'; return; }
+    subscribeEmail(email, 'newsletter');
     note.style.color='var(--gold)'; note.textContent='Welcome to the inner circle. ✦'; f.reset();
   }
   if(f.dataset.form==='checkout'){
@@ -2375,6 +2392,7 @@ document.addEventListener('submit',(e)=>{
     e.preventDefault();
     const email=f.email.value.trim();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ f.email.style.borderColor='var(--sale)'; return; }
+    subscribeEmail(email, 'welcome-popup');
     try{ localStorage.setItem('hourleigh_promo20','done'); }catch(_){}
     $('#promoBody').innerHTML=`<span class="eyebrow">You're in ✦</span><h3>Here's 20% off</h3><p>Apply this code at checkout — welcome to HOURLEIGH.</p><div class="code">Your code<br/><b>HOURLEIGH20</b></div>`;
     setTimeout(closePromo, 6000);
