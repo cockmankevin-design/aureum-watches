@@ -66,6 +66,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 input,select,textarea{font-family:inherit;font-size:1rem}
 ::selection{background:var(--gold-soft);color:var(--ink)}
 
+/* Ambient scroll background — soft gold light orbs that parallax as you scroll */
+#bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#bgfx .orb{position:absolute;border-radius:50%;filter:blur(66px);will-change:transform;transform:translate3d(0,0,0)}
+#bgfx .orb.a{width:48vw;height:48vw;left:-12vw;top:4vh;background:radial-gradient(circle,rgba(200,162,74,.20),transparent 68%)}
+#bgfx .orb.b{width:42vw;height:42vw;right:-14vw;top:46vh;background:radial-gradient(circle,rgba(200,162,74,.15),transparent 70%)}
+#bgfx .orb.c{width:36vw;height:36vw;left:16vw;top:90vh;background:radial-gradient(circle,rgba(176,150,90,.13),transparent 72%)}
+@media(prefers-reduced-motion:reduce){#bgfx{display:none}}
+
 /* Grain / paper texture overlay */
 .grain{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
@@ -307,10 +315,10 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .empty svg{width:42px;height:42px;color:var(--line);margin:0 auto 18px;stroke-width:1}
 
 /* ============ Toast ============ */
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120%);z-index:500;
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(calc(100% + 44px));z-index:500;
   background:var(--ink);color:var(--ivory);padding:15px 26px;font-size:.78rem;letter-spacing:.1em;
-  display:flex;align-items:center;gap:12px;transition:.5s var(--ease)}
-.toast.show{transform:translateX(-50%) translateY(0)}
+  display:flex;align-items:center;gap:12px;opacity:0;pointer-events:none;transition:.5s var(--ease)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast svg{width:18px;height:18px;color:var(--gold-line)}
 
 /* ============ Shop page ============ */
@@ -708,6 +716,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 </style>
 </head>
 <body>
+<div id="bgfx" aria-hidden="true"><span class="orb a"></span><span class="orb b"></span><span class="orb c"></span></div>
 <div class="grain"></div>
 
 <!-- Announcement -->
@@ -2385,19 +2394,34 @@ document.addEventListener('change',(e)=>{
   }
 });
 
-// header shadow on scroll
+// header shadow on scroll + scrollbar + ambient background parallax
 const head=$('#head');
 const sbar=$('#scrollbar');
+const orbA=document.querySelector('#bgfx .orb.a');
+const orbB=document.querySelector('#bgfx .orb.b');
+const orbC=document.querySelector('#bgfx .orb.c');
+const bgMotion=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let bgTick=false;
 window.addEventListener('scroll',()=>{
   head.classList.toggle('scrolled', window.scrollY>10);
   const h=document.documentElement.scrollHeight-window.innerHeight;
   if(sbar) sbar.style.width=(h>0?(window.scrollY/h*100):0)+'%';
+  if(bgMotion && !bgTick){
+    bgTick=true;
+    requestAnimationFrame(()=>{
+      const y=window.scrollY;
+      if(orbA) orbA.style.transform=`translate3d(0,${(y*0.12).toFixed(1)}px,0)`;
+      if(orbB) orbB.style.transform=`translate3d(0,${(y*-0.09).toFixed(1)}px,0)`;
+      if(orbC) orbC.style.transform=`translate3d(0,${(y*0.05).toFixed(1)}px,0)`;
+      bgTick=false;
+    });
+  }
 },{passive:true});
 
 // announcement rotator
 const ANN=['20% off your first order — use code HOURLEIGH20 at checkout',
   'Complimentary worldwide shipping · 2-year warranty · 30-day returns',
-  'New for 2026 — skeletons, moonphases &amp; integrated sport'];
+  'New for 2026 — skeletons, moonphases & integrated sport'];
 let ai=0; setInterval(()=>{ ai=(ai+1)%ANN.length; const s=$('#announce'); s.style.animation='none'; void s.offsetWidth; s.style.animation='fade .6s'; s.textContent=ANN[ai]; },4200);
 
 // first-order discount slide-in (shown once)
