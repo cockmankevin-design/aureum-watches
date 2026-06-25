@@ -15,7 +15,7 @@ HERO PRODUCT: The Lunar — men's moonphase chronograph, $85 (comparable $250).
 CATALOG (12 watches):
   Women — The Marchesa (mother-of-pearl two-tone day-date, $69), The Serpentine (open-heart AUTOMATIC, $99), The Aria (rose-gold mesh, $55), The Céleste (gold & blue leather, $55), The Lustre (crystal skeleton AUTOMATIC, $99), The Bijou (rose-gem bracelet, mother-of-pearl, $65).
   Men — The Regent (two-tone chronograph, $79), The Monarch (integrated-sport onyx, $89), The Mechanist (skeleton AUTOMATIC, $99), The Lunar (moonphase chronograph, $85), The Tempo (royal-blue steel chrono, $85), The Depths (emerald sport day-date, $75).
-HONESTY RULES: describe styles only (e.g. "datejust-style", "moonphase look"), NEVER claim affiliation with Rolex/AP/Patek/etc. Keep movement claims accurate (quartz vs automatic). Audience = value-savvy shoppers who want the look of luxury, plus gift buyers (his & hers).
+HONESTY RULES: describe styles GENERICALLY (e.g. "moonphase look", "two-tone dress style", "open-heart automatic") — NEVER use a luxury brand OR a luxury model name (no Gucci/Rolex/AP/Patek/Omega, and no "Datejust/Nautilus/Royal Oak/Submariner"-style references), and never claim or imply affiliation with any luxury brand. The customer must receive exactly what's shown — no fake-luxury framing. Keep movement claims accurate (quartz vs automatic). Audience = value-savvy shoppers who want the look of luxury, plus gift buyers (his & hers).
 VOICE: confident, warm, premium-but-accessible. Make EVERYTHING copy-paste ready (real captions, real scripts, real article text) — NOT advice about what to write.
 
 PHOTO FILES (use these EXACT filenames; the store serves them from /assets/watches/):
