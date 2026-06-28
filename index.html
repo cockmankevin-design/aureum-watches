@@ -528,6 +528,34 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 #snipcart .snipcart-modal{
   max-height:100vh !important; overflow-y:auto !important; -webkit-overflow-scrolling:touch !important;
 }
+/* Square geometry + HOURLEIGH palette over Snipcart's default blue/red controls */
+#snipcart button, #snipcart input, #snipcart select,
+#snipcart .snipcart-base-button, #snipcart .snipcart-button-icon,
+#snipcart .snipcart-input, #snipcart .snipcart-item-line__image{ border-radius:0 !important; }
+/* Secondary base buttons (e.g. "Back to store") -> ink, transparent */
+#snipcart .snipcart-base-button:not(.snipcart-button-primary){ background:transparent !important; color:#141414 !important; }
+/* Icon buttons: quantity steppers (is-secondary) + remove (is-danger) */
+#snipcart .snipcart-button-icon{ background:transparent !important; color:#141414 !important; }
+#snipcart .snipcart-button-icon svg{ color:#141414 !important; fill:#141414 !important; }
+#snipcart .snipcart-button-icon.is-secondary{ background:#F7F5F0 !important; border:1px solid rgba(20,20,20,.18) !important; }
+#snipcart .snipcart-button-icon.is-secondary svg{ color:#141414 !important; fill:#141414 !important; }
+#snipcart .snipcart-button-icon.is-secondary:hover{ background:#EFEBE2 !important; border-color:#141414 !important; }
+#snipcart .snipcart-button-icon.is-danger{ background:transparent !important; }
+#snipcart .snipcart-button-icon.is-danger svg{ color:#6E675C !important; fill:#6E675C !important; }
+#snipcart .snipcart-button-icon.is-danger:hover svg{ color:#9A7A2E !important; fill:#9A7A2E !important; }
+/* Quantity value + summary totals -> ink (kill Snipcart blue) */
+#snipcart .snipcart-item-quantity__quantity,
+#snipcart .snipcart-item-quantity__quantity input,
+#snipcart .snipcart-item-quantity__quantity span,
+#snipcart .snipcart-summary-fees__amount--highlight,
+#snipcart .snipcart-summary-fees__title--highlight,
+#snipcart .snipcart-item-quantity__total-price{ color:#141414 !important; }
+/* Discounts info "?" icon (stroke-drawn) -> gold */
+#snipcart .snipcart-summary-fees__discounts-icon,
+#snipcart .snipcart-summary-fees__discounts-icon svg,
+#snipcart .snipcart-summary-fees__discounts-icon svg *{ color:#9A7A2E !important; fill:#9A7A2E !important; stroke:#9A7A2E !important; }
+/* Cart item thumbnail: cover (not stretched) + framed square */
+#snipcart .snipcart-item-line__image{ object-fit:cover !important; border:1px solid rgba(20,20,20,.12) !important; background:#fff !important; }
 
 /* ============ Social proof / scarcity ============ */
 .cstars{display:flex;align-items:center;gap:7px;justify-content:center;margin:0 0 9px}
