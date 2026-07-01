@@ -506,6 +506,35 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
   border:0;border-bottom:1px dashed var(--gold-line);background:none;cursor:pointer;padding:0}
 .code-inline:hover{color:var(--ink);border-color:var(--ink)}
 
+/* ============ "In Detail" — cinematic dark product showcase ============ */
+.indetail{background:var(--ink);color:var(--ivory);padding:clamp(64px,9vw,128px) 24px;position:relative;overflow:hidden}
+.indetail::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(58% 52% at 50% 42%,rgba(200,162,74,.12),transparent 70%)}
+.indetail .id-inner{max-width:1180px;margin:0 auto;position:relative}
+.id-head{text-align:center;margin-bottom:clamp(34px,5vw,64px)}
+.id-head .eyebrow{color:var(--gold-line)}
+.id-title{color:var(--ivory);font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(1.9rem,4vw,3.3rem);line-height:1.05;margin-top:16px}
+.id-stage{display:grid;grid-template-columns:1fr minmax(230px,340px) 1fr;align-items:center;gap:clamp(24px,3.4vw,56px)}
+.id-watch{position:relative;aspect-ratio:4/5;background:#fff;border:1px solid rgba(247,245,240,.16);
+  box-shadow:0 46px 90px -34px rgba(0,0,0,.75);will-change:transform;animation:float 6s ease-in-out infinite}
+.id-watch img{width:100%;height:100%;object-fit:contain;padding:8%}
+.id-watch::after{content:"";position:absolute;inset:10px;border:1px solid rgba(20,20,20,.05);pointer-events:none}
+.id-cards{display:flex;flex-direction:column;gap:clamp(22px,3.4vw,46px)}
+.id-cards.left{align-items:flex-end;text-align:right}
+.idc{max-width:240px}
+.idc-l{display:block;font-family:var(--sans);font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:7px}
+.idc-t{font-family:var(--serif);font-size:1.16rem;font-weight:500;color:var(--ivory);line-height:1.22}
+@media(prefers-reduced-motion:reduce){.id-watch{animation:none}}
+@media(max-width:820px){
+  .id-stage{grid-template-columns:1fr;gap:36px}
+  .id-watch{order:-1;width:min(300px,72vw);margin:0 auto}
+  .id-cards{flex-direction:row;flex-wrap:wrap;justify-content:center;text-align:center;gap:28px 34px}
+  .id-cards.left{align-items:center;text-align:center}
+  .idc{max-width:44%}
+}
+
 /* ===== Snipcart checkout — restyled to match HOURLEIGH + guaranteed scroll ===== */
 #snipcart, .snipcart{
   font-family:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif !important;
@@ -1820,6 +1849,29 @@ function viewShop(filter, sort, price){
   <div style="height:60px"></div>`;
 }
 
+/* Cinematic dark "In Detail" band: watch floating in a light frame on an
+   atmospheric black section, with the piece's key specs as gold callouts. */
+function inDetail(p){
+  const specs=p.specs||{};
+  const order=['Movement','Dial','Case size','Case material','Bracelet','Water resistance','Crystal','Functions','Bezel'];
+  const picks=[];
+  order.forEach(k=>{ if(specs[k]!==undefined && picks.length<6) picks.push([k,specs[k]]); });
+  Object.entries(specs).forEach(([k,v])=>{ if(picks.length<6 && !picks.some(x=>x[0]===k)) picks.push([k,v]); });
+  if(picks.length<2) return '';
+  const half=Math.ceil(picks.length/2);
+  const card=([k,v])=>`<div class="idc reveal"><span class="idc-l">${esc(k)}</span><b class="idc-t">${esc(v)}</b></div>`;
+  const col=arr=>arr.map(card).join('');
+  const img=(p.images&&p.images[0])||'';
+  return `
+  <section class="indetail"><div class="id-inner">
+    <div class="id-head reveal"><span class="eyebrow">In Detail</span><h2 class="id-title">Considered, to the last detail.</h2></div>
+    <div class="id-stage">
+      <div class="id-cards left">${col(picks.slice(0,half))}</div>
+      <div class="id-watch reveal-zoom"><img src="${img}" alt="${esc(p.name)} — in detail" loading="lazy" decoding="async"/></div>
+      <div class="id-cards right">${col(picks.slice(half))}</div>
+    </div>
+  </div></section>`;
+}
 function viewProduct(id){
   const p=byId(id);
   if(!p) return view404();
@@ -1878,6 +1930,9 @@ function viewProduct(id){
         </div>
       </div>
     </div>
+  </div></section>
+  ${inDetail(p)}
+  <section class="pd"><div class="wrap">
     ${reviewsBlock(p)}
   </div></section>
 
