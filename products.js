@@ -65,15 +65,15 @@ window.PRODUCTS = [
     badge: "Bestseller",
     images: ["assets/watches/real-serpentine.jpg"],
     blurb:
-      "A true self-winding automatic for her. The Serpentine's royal-blue dial opens to reveal the balance wheel beating beneath, with a moon indicator, crystal-set markers and a sculpted two-tone bracelet. Mechanical jewellery.",
+      "A true self-winding automatic for her. The Serpentine's royal-blue dial opens to reveal the balance wheel beating beneath, framed by crystal-set markers and a sculpted two-tone bracelet. Mechanical jewellery.",
     specs: {
       "Case size": "32 mm",
       "Case material": "Two-tone stainless steel",
       Bezel: "Polished, gold-tone",
       Bracelet: "Two-tone faceted-link",
-      Dial: "Royal-blue, open-heart window, moon indicator, crystal markers",
+      Dial: "Royal-blue, open-heart window, crystal markers",
       Movement: "Automatic mechanical (self-winding)",
-      Functions: "Open-heart · Sub-dials · Moon indicator",
+      Functions: "Automatic · Open-heart · Sub-dials",
       "Water resistance": "3 ATM (30 m)",
       Crystal: "Hardened mineral",
       Warranty: "2-year limited"
@@ -149,7 +149,7 @@ window.PRODUCTS = [
     specs: {
       "Case size": "34 mm",
       "Case material": "Stainless steel, crystal-set bezel",
-      Bezel: "Baguette-crystal set",
+      Bezel: "Crystal-set",
       Bracelet: "White leather strap",
       Dial: "Skeleton / fully openworked",
       Movement: "Automatic mechanical (self-winding)",
