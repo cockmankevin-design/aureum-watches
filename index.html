@@ -35,18 +35,20 @@
    Ivory canvas · near-black ink · hairline gold · serif display
    ============================================================ */
 :root{
-  --ivory:#F7F5F0;
-  --ivory-deep:#EFEBE2;
-  --paper:#FBFAF6;
-  --ink:#141414;
-  --ink-soft:#3B3833;
-  --muted:#6E675C;
-  --line:rgba(20,20,20,.12);
-  --line-soft:rgba(20,20,20,.07);
-  --gold:#9A7A2E;        /* gold for small text (AA on ivory) */
-  --gold-line:#C8A24A;   /* gold for hairlines & accents */
+  /* DARK CINEMATIC THEME — deep black canvas, warm-ivory text, gold accents.
+     (Variable names kept; only values flipped so the whole system inverts.) */
+  --ivory:#141414;       /* canvas — deep near-black */
+  --ivory-deep:#0e0e0e;  /* darker alternating bands */
+  --paper:#1c1a17;       /* raised warm-dark surface (cards) */
+  --ink:#F3EFE5;         /* foreground — warm ivory text & light chrome */
+  --ink-soft:rgba(243,239,229,.72);
+  --muted:#9c948a;       /* legible warm grey on dark */
+  --line:rgba(243,239,229,.14);
+  --line-soft:rgba(243,239,229,.07);
+  --gold:#CBA860;        /* text gold — legible on dark */
+  --gold-line:#C8A24A;   /* hairline & accent gold */
   --gold-soft:#E7D9B0;
-  --sale:#8A3A2E;
+  --sale:#E0917A;
   --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
   --sans:'Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --ease:cubic-bezier(.22,.61,.36,1);
@@ -802,6 +804,30 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
   .story-stats{grid-template-columns:1fr 1fr}
   .foot-grid{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   DARK CINEMATIC THEME — component fixes
+   The palette flip inverts most things correctly (dark canvas,
+   ivory text, light buttons/badges). These rules re-darken the
+   sections that were built as "dark accents" (so they don't turn
+   light) and fix the header, footer headings, grain & selection.
+   ============================================================ */
+.site-head{background:rgba(17,17,17,.82)}
+.announce{background:#0b0b0b;color:var(--ink)}
+.story{background:#0e0e0e;color:var(--ink)}
+.story h2{color:var(--ink)}
+.stat{background:#181613}
+.stat b{color:var(--ink)}
+.promo-band{background:#0e0e0e;color:var(--ink)}
+.promo-band h2,.pb-chip{color:var(--ink)}
+.promo-band .btn:hover{color:var(--ink)}
+.indetail{background:#0e0e0e;color:var(--ink)}
+.id-title,.idc-t{color:var(--ink)}
+.site-foot{background:#0b0b0b}
+.foot-brand .brand,.foot-col h4{color:var(--ink)}
+.toast{background:#0a0a0a;color:var(--ink)}
+::selection{background:var(--gold-line);color:#141414}
+.grain{opacity:.055;mix-blend-mode:overlay}
 </style>
 </head>
 <body>
@@ -1753,7 +1779,7 @@ function viewHome(){
       <h2 class="h2" style="margin:.2em 0 .4em">Made for the details<br/>that matter.</h2>
       <p>A watch feels considered because of a handful of things done well — a crisp fluted bezel, a mother-of-pearl dial that shifts in the light, a bracelet with real weight. We put our attention there, source carefully, and skip the inflated markup.</p>
       <p>No counterfeits, no borrowed logos, no pretence. Just genuinely handsome watches, honestly priced and backed by a real two-year warranty.</p>
-      <div style="margin-top:30px"><a href="/about" class="linkmore" style="color:var(--ivory);border-color:var(--ivory)">Read Our Story →</a></div>
+      <div style="margin-top:30px"><a href="/about" class="linkmore" style="color:var(--ink);border-color:var(--ink)">Read Our Story →</a></div>
     </div>
     <div class="story-stats reveal-zoom" style="transition-delay:120ms">
       <div class="stat"><b>12</b><span>Curated pieces, no filler</span></div>
