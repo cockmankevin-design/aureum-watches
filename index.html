@@ -587,6 +587,44 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
   .ws-ch{min-height:0;padding:30px 0;justify-content:flex-start}
 }
 
+/* ============ Animation showcase round (each block independently removable) ============ */
+/* [A] Lenis smooth scroll — native smooth-scroll must yield while Lenis drives */
+html.lenis-on{scroll-behavior:auto}
+
+/* [B] Curtain image reveals — media unveils top-to-bottom with a soft settle-zoom.
+   Driven by the same IntersectionObserver as .reveal (observeReveals adds .in). */
+.curtain{clip-path:inset(0 0 100% 0);transition:clip-path 1.1s var(--ease)}
+.curtain.in{clip-path:inset(0 0 0% 0)}
+.curtain img{transform:scale(1.16);transition:transform 1.5s var(--ease)}
+.curtain.in img{transform:scale(1)}
+.pcard:hover .media.curtain.in img{transform:scale(1.06)}  /* keep the existing hover zoom on cards */
+@media(prefers-reduced-motion:reduce){.curtain{clip-path:none!important}.curtain img{transform:none!important}}
+
+/* [C] Brand intro — first visit only, ≤2s, skippable (JS-gated) */
+#intro{position:fixed;inset:0;z-index:9998;background:var(--ivory);display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:26px;opacity:1;transition:opacity .5s var(--ease)}
+#intro.done{opacity:0;pointer-events:none}
+#intro svg{width:120px;height:120px}
+#intro circle{fill:none;stroke:var(--gold-line);stroke-width:1.5;stroke-dasharray:100;stroke-dashoffset:100}
+#intro.play circle{animation:introRing 1s var(--ease) forwards}
+@keyframes introRing{to{stroke-dashoffset:0}}
+#intro .iw{font-family:var(--serif);font-size:1.9rem;letter-spacing:.42em;padding-left:.42em;color:var(--ink);
+  opacity:0;transform:translateY(10px)}
+#intro.play .iw{transition:opacity .6s var(--ease) .7s,transform .6s var(--ease) .7s;opacity:1;transform:none}
+
+/* [D] Marquee band + micro-polish */
+.marquee{overflow:clip;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);
+  padding:clamp(20px,3vw,30px) 0;background:var(--ivory)}
+.mq-track{display:inline-flex;white-space:nowrap;will-change:transform;animation:mq 30s linear infinite}
+.mq-track span{font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:clamp(1.35rem,2.4vw,2rem);color:var(--ink-soft);flex:none}
+.mq-track b{color:var(--gold-line);font-weight:400;padding:0 .55em}
+@keyframes mq{to{transform:translate3d(-50%,0,0)}}
+.btn{will-change:transform}   /* [D] magnetic buttons set inline transform from JS */
+@keyframes cartBump{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+.icon-btn.bump{animation:cartBump .45s var(--ease)}
+@media(prefers-reduced-motion:reduce){.mq-track{animation:none}#intro{display:none}}
+
 /* ===== Snipcart checkout — restyled to match HOURLEIGH + guaranteed scroll ===== */
 #snipcart, .snipcart{
   font-family:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif !important;
@@ -882,6 +920,12 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 </head>
 <body>
 <div id="bgfx" aria-hidden="true"><span class="stars"></span><span class="orb a"><i></i></span><span class="orb b"><i></i></span><span class="orb c"><i></i></span><span class="halo"><i></i></span><span class="sheen"></span></div>
+
+<!-- Brand intro: shown once per visitor (localStorage-gated in JS), ≤2s, click-to-skip -->
+<div id="intro" aria-hidden="true" hidden>
+  <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/></svg>
+  <span class="iw">HOURLEIGH</span>
+</div>
 <div class="grain"></div>
 
 <!-- Announcement -->
@@ -1022,6 +1066,11 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 
 <script src="products.js"></script>
 <script src="reviews.js"></script>
+<!-- Motion libraries (free): Lenis smooth scroll + GSAP ScrollTrigger for scroll-scrubbed effects.
+     The site degrades gracefully if these fail to load — all init code is guarded. -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
 <script>
 (function(){
 "use strict";
@@ -1052,13 +1101,16 @@ function loadSnipcart(){
   const css=document.createElement('link'); css.rel='stylesheet';
   css.href='https://cdn.snipcart.com/themes/v3.7.1/default/snipcart.css'; document.head.appendChild(css);
   const div=document.createElement('div'); div.id='snipcart';
-  div.setAttribute('data-api-key',SNIPCART_API_KEY); div.setAttribute('hidden',''); document.body.appendChild(div);
+  div.setAttribute('data-api-key',SNIPCART_API_KEY); div.setAttribute('hidden','');
+  div.setAttribute('data-lenis-prevent','');   // cart/checkout modal keeps native scrolling under Lenis
+  document.body.appendChild(div);
   const s=document.createElement('script'); s.async=true;
   s.src='https://cdn.snipcart.com/themes/v3.7.1/default/snipcart.js'; document.body.appendChild(s);
   document.addEventListener('snipcart.ready',function(){
     try{ window.Snipcart && Snipcart.events.on('order.completed',function(o){
       pixelTrack('Purchase',{value:(o&&(o.total||o.grandTotal))||0,currency:(o&&o.currency)||'USD'});
     }); }catch(_){ }
+    try{ window.Snipcart && Snipcart.events.on('item.added',function(){ bumpCart(); }); }catch(_){ }
   });
 }
 function snipAdd(p,qty,variant){
@@ -1662,10 +1714,13 @@ function pairsSection(){
   </div></section>`;
 }
 
+let __prevCartN=0;
 function updateCartUI(){
   const n=cartCount();
   const badge=$('#cartCount');
   badge.textContent=n; badge.classList.toggle('show', n>0);
+  if(n>__prevCartN) bumpCart();
+  __prevCartN=n;
   renderDrawer();
   // keep cart/checkout pages in sync if currently shown
   const route=parseRoute().path;
@@ -1724,7 +1779,7 @@ function renderDrawer(){
 ---------------------------------------------------------------- */
 function card(p, delay){
   return `<a class="pcard reveal" href="/watch/${p.id}" style="transition-delay:${delay||0}ms">
-    <div class="media">
+    <div class="media curtain" style="transition-delay:${delay||0}ms">
       ${savings(p)>0?`<span class="tag">Save ${savings(p)}%</span>`:''}
       ${p.badge?`<span class="badge">${esc(p.badge)}</span>`:(lowStock(p)?`<span class="badge badge-stock">Almost gone</span>`:'')}
       ${media(p,0,'card')}
@@ -1838,6 +1893,10 @@ function viewHome(){
       <div class="stat"><b>100%</b><span>Genuine, named makers</span></div>
     </div>
   </div></div></section>
+
+  <div class="marquee" aria-hidden="true"><div class="mq-track">
+    <span>Luxury is a look, not a loan<b>·</b>Complimentary worldwide shipping<b>·</b>2-year warranty<b>·</b>30-day returns<b>·</b></span><span>Luxury is a look, not a loan<b>·</b>Complimentary worldwide shipping<b>·</b>2-year warranty<b>·</b>30-day returns<b>·</b></span>
+  </div></div>
 
   <section class="sec"><div class="wrap"><div class="edit-grid">
     <div class="edit-media reveal-l">${media(byId('marchesa-mop'),3)}</div>
@@ -1961,7 +2020,7 @@ function inDetail(p){
       </div>`).join('')}
     </div>
     <div class="ws-pin"><div class="ws-sticky">
-      <div class="id-watch"><img src="${img}" alt="${esc(p.name)} — in detail" loading="lazy" decoding="async"/></div>
+      <div class="id-watch curtain"><img src="${img}" alt="${esc(p.name)} — in detail" loading="lazy" decoding="async"/></div>
       <div class="ws-tag"><span>${esc(p.name)}</span><b>${money(p.price)}</b></div>
     </div></div>
   </div></section>`;
@@ -1982,7 +2041,7 @@ function viewProduct(id){
     <div class="crumb"><a href="/shop">Collection</a> · <a href="/${p.gender==='men'?'men':'women'}">${p.gender==='men'?"Men's":"Women's"}</a> · <span>${esc(p.name)}</span></div>
     <div class="pd-grid">
       <div class="gallery">
-        <div class="g-main" id="gMain">${media(p,0,null,true)}</div>
+        <div class="g-main curtain" id="gMain">${media(p,0,null,true)}</div>
         ${hasGallery?`<div class="g-thumbs">${p.images.map((src,i)=>`<button class="${i===0?'active':''}" data-thumb="${i}"><img src="${src.replace(/\.jpg$/i,'-card.jpg')}" alt="View ${i+1}" loading="lazy"/></button>`).join('')}</div>`:''}
       </div>
       <div class="pd-info">
@@ -2323,8 +2382,14 @@ function setActiveNav(path){
   });
 }
 /* SPA navigation via the History API (paths, not hash — Snipcart owns the hash) */
+/* Scroll to top instantly — native jump first (works even before Lenis's next
+   tick), then sync Lenis's internal target so it doesn't animate back. */
+function scrollTop(){
+  window.scrollTo(0,0);
+  if(window.__lenis) window.__lenis.scrollTo(0,{immediate:true,force:true});
+}
 function go(href){
-  if(href===location.pathname+location.search) { window.scrollTo(0,0); return; }
+  if(href===location.pathname+location.search) { scrollTop(); return; }
   history.pushState({}, '', href);
   closeCart(); mnav.classList.remove('open');
   render();
@@ -2348,7 +2413,7 @@ function render(){
   else { html=view404(); }
   app.innerHTML=html;
   setActiveNav(path);
-  if(top) window.scrollTo({top:0,behavior:'instant'in window?'instant':'auto'});
+  if(top) scrollTop();
   // Soft cross-fade between SPA views (skipped on the very first paint so it
   // never delays LCP, and skipped entirely under prefers-reduced-motion).
   if(appRenderedOnce && !REDUCE_MOTION){
@@ -2360,6 +2425,7 @@ function render(){
   }
   appRenderedOnce=true;
   observeReveals();
+  initScrubs(path);   // rebuild scroll-scrub tweens for the freshly rendered view
   if(path==='/'||path===''){ animateStats(); }
   if(path.startsWith('/watch/')){ const sp=byId(path.split('/')[2]); sp ? setupSticky(sp) : hideSticky(); }
   else hideSticky();
@@ -2400,7 +2466,7 @@ function hideSticky(){ const bar=$('#stickyBar'); bar.classList.remove('show'); 
 ---------------------------------------------------------------- */
 let io;
 function observeReveals(){
-  const els=app.querySelectorAll('.reveal:not(.in),.reveal-l:not(.in),.reveal-r:not(.in),.reveal-zoom:not(.in)');
+  const els=app.querySelectorAll('.reveal:not(.in),.reveal-l:not(.in),.reveal-r:not(.in),.reveal-zoom:not(.in),.curtain:not(.in)');
   if(!('IntersectionObserver'in window)){ els.forEach(e=>e.classList.add('in')); return; }
   if(io) io.disconnect();
   io=new IntersectionObserver((entries)=>{
@@ -2661,6 +2727,76 @@ render();
 updateCartUI();
 maybeShowPromo();
 loadSnipcart();   // no-op unless SNIPCART_API_KEY is set
+/* ============ Animation showcase round — JS (each block independently removable) ============ */
+
+/* [C] Brand intro — once per visitor, ≤2s, click-to-skip, hard failsafe */
+(function(){
+  const el=document.getElementById('intro');
+  if(!el) return;
+  let seen=null; try{ seen=localStorage.getItem('hourleigh_intro_v1'); }catch(_){}
+  if(seen || REDUCE_MOTION){ el.remove(); return; }
+  try{ localStorage.setItem('hourleigh_intro_v1','1'); }catch(_){}
+  el.hidden=false;
+  requestAnimationFrame(()=>el.classList.add('play'));
+  const done=()=>{ if(el.classList.contains('done')) return; el.classList.add('done'); setTimeout(()=>el.remove(),600); };
+  el.addEventListener('click',done);
+  setTimeout(done,2000);                                            // total runtime cap
+  setTimeout(()=>{ const n=document.getElementById('intro'); if(n) n.remove(); },2900); // failsafe
+})();
+
+/* [A] Scroll-scrub tweens — rebuilt per route (render() calls this). No-ops until GSAP loads. */
+function initScrubs(path){
+  if(!window.gsap || !window.ScrollTrigger || REDUCE_MOTION) return;
+  ScrollTrigger.getAll().forEach(t=>t.kill());
+  // Golden halo turns with your scroll, on every page (outer span has no CSS animation)
+  gsap.to('#bgfx .halo',{rotation:120,ease:'none',
+    scrollTrigger:{start:'top top',end:'max',scrub:1.6}});
+  // Hero watch leans back subtly as it leaves the viewport (parent — .hero-frame keeps its CSS float)
+  const hm=app.querySelector('.hero-media');
+  if(hm) gsap.to(hm,{rotationY:7,y:-28,ease:'none',transformPerspective:900,
+    scrollTrigger:{trigger:hm,start:'top 75%',end:'bottom top',scrub:1.2}});
+  // Pinned story watch settles from 94% to full size across the chapters
+  const ws=app.querySelector('.ws-sticky .id-watch');
+  if(ws) gsap.fromTo(ws,{scale:.94},{scale:1,ease:'none',
+    scrollTrigger:{trigger:'.indetail',start:'top 70%',end:'bottom bottom',scrub:1.2}});
+}
+
+/* [A] Lenis smooth scroll + GSAP wiring — after deferred CDN libs land; graceful no-op if blocked */
+window.addEventListener('load',function(){
+  if(REDUCE_MOTION || !window.Lenis || !window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+  const lenis=new Lenis({lerp:.09});
+  window.__lenis=lenis;
+  document.documentElement.classList.add('lenis-on');   // yield native smooth-scroll to Lenis
+  lenis.on('scroll',ScrollTrigger.update);
+  gsap.ticker.add(t=>lenis.raf(t*1000));
+  gsap.ticker.lagSmoothing(0);
+  initScrubs(parseRoute().path);
+});
+
+/* [D] Magnetic buttons — lean toward the cursor (fine pointers only) */
+if(window.matchMedia('(pointer:fine)').matches && !REDUCE_MOTION){
+  document.addEventListener('pointermove',(e)=>{
+    const b=e.target.closest('.btn'); if(!b) return;
+    const r=b.getBoundingClientRect();
+    const dx=((e.clientX-r.left)/r.width-.5)*12, dy=((e.clientY-r.top)/r.height-.5)*10;
+    b.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
+  });
+  document.addEventListener('pointerout',(e)=>{
+    const b=e.target.closest('.btn'); if(!b) return;
+    if(!(e.relatedTarget && b.contains(e.relatedTarget))) b.style.transform='';
+  });
+}
+
+/* [D] Cart icon bump when something lands in the bag */
+function bumpCart(){
+  if(REDUCE_MOTION) return;
+  const btn=document.getElementById('cartCount') && document.getElementById('cartCount').closest('.icon-btn');
+  if(!btn) return;
+  btn.classList.remove('bump'); void btn.offsetWidth; btn.classList.add('bump');
+  btn.addEventListener('animationend',()=>btn.classList.remove('bump'),{once:true});
+}
+
 })();
 </script>
 </body>
