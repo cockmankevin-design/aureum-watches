@@ -244,12 +244,11 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .hero-media{position:relative}
 .hero-media::before{content:"";position:absolute;inset:-14% -10%;z-index:-2;pointer-events:none;
   background:radial-gradient(58% 52% at 56% 42%,rgba(200,162,74,.16),transparent 72%)}
-.hero-frame{position:relative;aspect-ratio:4/5;overflow:hidden;background:#fff;
-  border:1px solid var(--line);will-change:transform;
-  box-shadow:0 30px 60px -26px rgba(20,20,20,.30);
-  animation:float 6s ease-in-out infinite}
-.hero-frame img{width:100%;height:100%;object-fit:contain;padding:7%}
-.hero-frame::after{content:"";position:absolute;inset:10px;border:1px solid rgba(247,245,240,.5);pointer-events:none}
+/* Watch floats free on the dark canvas: frame is canvas-dark and the photo's
+   white background is multiplied away (white -> frame color, watch remains). */
+.hero-frame{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--ivory);
+  will-change:transform;animation:float 6s ease-in-out infinite}
+.hero-frame img{width:100%;height:100%;object-fit:contain;padding:7%;mix-blend-mode:multiply}
 .hero-shadow{position:absolute;left:50%;bottom:-8%;width:58%;height:26px;border-radius:50%;z-index:-1;pointer-events:none;
   transform:translateX(-50%);background:radial-gradient(ellipse,rgba(20,20,20,.26),transparent 70%);filter:blur(7px);
   animation:floatShadow 6s ease-in-out infinite}
@@ -569,10 +568,9 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 .ws-ch.intro .ws-h{font-style:italic;font-weight:400}
 .ws-c{color:var(--muted);font-weight:300;font-size:.98rem;max-width:44ch}
 .ws-sticky{position:sticky;top:clamp(90px,14vh,150px)}
-.id-watch{position:relative;aspect-ratio:4/5;background:#fff;border:1px solid rgba(247,245,240,.16);
-  box-shadow:0 46px 90px -34px rgba(0,0,0,.75);will-change:transform;animation:float 6s ease-in-out infinite}
-.id-watch img{width:100%;height:100%;object-fit:contain;padding:8%}
-.id-watch::after{content:"";position:absolute;inset:10px;border:1px solid rgba(20,20,20,.05);pointer-events:none}
+.id-watch{position:relative;aspect-ratio:4/5;background:var(--ivory-deep);
+  will-change:transform;animation:float 6s ease-in-out infinite}
+.id-watch img{width:100%;height:100%;object-fit:contain;padding:8%;mix-blend-mode:multiply}
 .ws-sticky .id-watch{max-width:400px;margin:0 auto}
 .ws-tag{display:flex;justify-content:space-between;align-items:baseline;max-width:400px;margin:18px auto 0;
   border-top:1px solid var(--line);padding-top:14px}
@@ -588,8 +586,6 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
 }
 
 /* ============ Animation showcase round (each block independently removable) ============ */
-/* [A] Lenis smooth scroll — native smooth-scroll must yield while Lenis drives */
-html.lenis-on{scroll-behavior:auto}
 
 /* [B] Curtain image reveals — media unveils top-to-bottom with a soft settle-zoom.
    Driven by the same IntersectionObserver as .reveal (observeReveals adds .in). */
@@ -1066,9 +1062,9 @@ html.lenis-on{scroll-behavior:auto}
 
 <script src="products.js"></script>
 <script src="reviews.js"></script>
-<!-- Motion libraries (free): Lenis smooth scroll + GSAP ScrollTrigger for scroll-scrubbed effects.
-     The site degrades gracefully if these fail to load — all init code is guarded. -->
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+<!-- Motion library (free): GSAP ScrollTrigger for scroll-scrubbed effects.
+     The site degrades gracefully if it fails to load — all init code is guarded.
+     (Lenis smooth-scroll was removed: the added scroll latency felt laggy.) -->
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js" defer></script>
 <script>
@@ -1102,7 +1098,6 @@ function loadSnipcart(){
   css.href='https://cdn.snipcart.com/themes/v3.7.1/default/snipcart.css'; document.head.appendChild(css);
   const div=document.createElement('div'); div.id='snipcart';
   div.setAttribute('data-api-key',SNIPCART_API_KEY); div.setAttribute('hidden','');
-  div.setAttribute('data-lenis-prevent','');   // cart/checkout modal keeps native scrolling under Lenis
   document.body.appendChild(div);
   const s=document.createElement('script'); s.async=true;
   s.src='https://cdn.snipcart.com/themes/v3.7.1/default/snipcart.js'; document.body.appendChild(s);
@@ -2382,12 +2377,7 @@ function setActiveNav(path){
   });
 }
 /* SPA navigation via the History API (paths, not hash — Snipcart owns the hash) */
-/* Scroll to top instantly — native jump first (works even before Lenis's next
-   tick), then sync Lenis's internal target so it doesn't animate back. */
-function scrollTop(){
-  window.scrollTo(0,0);
-  if(window.__lenis) window.__lenis.scrollTo(0,{immediate:true,force:true});
-}
+function scrollTop(){ window.scrollTo(0,0); }
 function go(href){
   if(href===location.pathname+location.search) { scrollTop(); return; }
   history.pushState({}, '', href);
@@ -2750,27 +2740,22 @@ function initScrubs(path){
   ScrollTrigger.getAll().forEach(t=>t.kill());
   // Golden halo turns with your scroll, on every page (outer span has no CSS animation)
   gsap.to('#bgfx .halo',{rotation:120,ease:'none',
-    scrollTrigger:{start:'top top',end:'max',scrub:1.6}});
+    scrollTrigger:{start:'top top',end:'max',scrub:true}});
   // Hero watch leans back subtly as it leaves the viewport (parent — .hero-frame keeps its CSS float)
   const hm=app.querySelector('.hero-media');
   if(hm) gsap.to(hm,{rotationY:7,y:-28,ease:'none',transformPerspective:900,
-    scrollTrigger:{trigger:hm,start:'top 75%',end:'bottom top',scrub:1.2}});
+    scrollTrigger:{trigger:hm,start:'top 75%',end:'bottom top',scrub:true}});
   // Pinned story watch settles from 94% to full size across the chapters
   const ws=app.querySelector('.ws-sticky .id-watch');
   if(ws) gsap.fromTo(ws,{scale:.94},{scale:1,ease:'none',
-    scrollTrigger:{trigger:'.indetail',start:'top 70%',end:'bottom bottom',scrub:1.2}});
+    scrollTrigger:{trigger:'.indetail',start:'top 70%',end:'bottom bottom',scrub:true}});
 }
 
-/* [A] Lenis smooth scroll + GSAP wiring — after deferred CDN libs land; graceful no-op if blocked */
+/* [A] GSAP ScrollTrigger wiring — after the deferred CDN lib lands; graceful no-op if
+   blocked. Scrubs ride native scroll (scrub:true = event-driven, no ticker dependency). */
 window.addEventListener('load',function(){
-  if(REDUCE_MOTION || !window.Lenis || !window.gsap || !window.ScrollTrigger) return;
+  if(REDUCE_MOTION || !window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
-  const lenis=new Lenis({lerp:.09});
-  window.__lenis=lenis;
-  document.documentElement.classList.add('lenis-on');   // yield native smooth-scroll to Lenis
-  lenis.on('scroll',ScrollTrigger.update);
-  gsap.ticker.add(t=>lenis.raf(t*1000));
-  gsap.ticker.lagSmoothing(0);
   initScrubs(parseRoute().path);
 });
 
