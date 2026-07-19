@@ -1002,7 +1002,7 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.06;letter-spa
       </div>
       <div class="foot-col">
         <h4>Contact</h4>
-        <a href="mailto:hourleighwatches@gmail.com">hourleighwatches@gmail.com</a>
+        <a href="mailto:hello@hourleigh.com">hello@hourleigh.com</a>
         <a href="/shipping-returns">Track an Order</a>
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms of Service</a>
@@ -1139,7 +1139,7 @@ const TIKTOK_PIXEL_ID = "";  // TikTok Events Manager → your Pixel ID
    pre-filled email draft to the store instead — either way every review is
    moderated by you before you add it to reviews.js. */
 const REVIEW_FORM_ENDPOINT = "https://formspree.io/f/maqgndra";
-const STORE_EMAIL = "hourleighwatches@gmail.com";
+const STORE_EMAIL = "hello@hourleigh.com";
 
 /* Email list — MailerLite embedded-form (jsonp) subscribe endpoint for the
    "HOURLEIGH" form. Both the footer signup and the welcome popup POST here;
@@ -1579,7 +1579,7 @@ function reviewsBlock(p){
     <div class="rev-grid">
       <div class="rev-card reveal"><div class="rev-top"><span class="rev-name">Genuine article <span class="vf">Authentic</span></span></div><p>A genuine ${/Automatic/.test(p.specs.Movement)?'automatic mechanical':'Japanese-quartz'} timepiece — real steel, real crystal, a real movement — sold under the HOURLEIGH name with full specifications listed openly.</p></div>
       <div class="rev-card reveal" style="transition-delay:80ms"><div class="rev-top"><span class="rev-name">Honest photos</span></div><p>Every photo shows the exact model that ships. What you see on this page is what arrives in the box.</p></div>
-      <div class="rev-card reveal" style="transition-delay:160ms"><div class="rev-top"><span class="rev-name">Backed by us</span></div><p>2-year warranty, 30-day no-question returns, and tracked, insured shipping on every order.</p></div>
+      <div class="rev-card reveal" style="transition-delay:160ms"><div class="rev-top"><span class="rev-name">Backed by us</span></div><p>2-year warranty and tracked, insured shipping on every order. All sales are final.</p></div>
     </div>`;
   return `<div class="reviews" id="reviews">
     <div class="reviews-head reveal">
@@ -1812,7 +1812,7 @@ function trustStrip(){
   return `<section class="trust"><div class="wrap"><div class="trust-grid">
     <div class="trust-item">${ICONS.truck}<div><b>Complimentary Shipping</b><span>On every order, worldwide</span></div></div>
     <div class="trust-item">${ICONS.shield}<div><b>2-Year Warranty</b><span>Movement &amp; finish guaranteed</span></div></div>
-    <div class="trust-item">${ICONS.refresh}<div><b>30-Day Returns</b><span>Wear it, then decide</span></div></div>
+    <div class="trust-item">${ICONS.refresh}<div><b>All Sales Final</b><span>Choose confidently</span></div></div>
     <div class="trust-item">${ICONS.lock}<div><b>Secure Checkout</b><span>Encrypted, every time</span></div></div>
   </div></div></section>`;
 }
@@ -1890,13 +1890,13 @@ function viewHome(){
     <div class="story-stats reveal-zoom" style="transition-delay:120ms">
       <div class="stat"><b>12</b><span>Curated pieces, no filler</span></div>
       <div class="stat"><b>2yr</b><span>Warranty included</span></div>
-      <div class="stat"><b>30d</b><span>No-question returns</span></div>
+      <div class="stat"><b>✓</b><span>All sales final</span></div>
       <div class="stat"><b>100%</b><span>Genuine, named makers</span></div>
     </div>
   </div></div></section>
 
   <div class="marquee" aria-hidden="true"><div class="mq-track">
-    <span>Luxury is a look, not a loan<b>·</b>Complimentary worldwide shipping<b>·</b>2-year warranty<b>·</b>30-day returns<b>·</b></span><span>Luxury is a look, not a loan<b>·</b>Complimentary worldwide shipping<b>·</b>2-year warranty<b>·</b>30-day returns<b>·</b></span>
+    <span>Luxury is a look, not a loan<b>·</b>Complimentary worldwide shipping<b>·</b>2-year warranty<b>·</b>All sales final<b>·</b></span><span>Luxury is a look, not a loan<b>·</b>Complimentary worldwide shipping<b>·</b>2-year warranty<b>·</b>All sales final<b>·</b></span>
   </div></div>
 
   <section class="sec"><div class="wrap"><div class="edit-grid">
@@ -1926,7 +1926,7 @@ function viewHome(){
     <div class="tgrid">
       <div class="tcard reveal"><div class="stars">✦</div><p>"Genuine makers, named openly on every product page. No counterfeits, no borrowed logos — ever."</p><div class="who">Provenance</div></div>
       <div class="tcard reveal" style="transition-delay:90ms"><div class="stars">✦</div><p>"Every photo shows the exact model that ships. What you see is what arrives in the box."</p><div class="who">Honest Photography</div></div>
-      <div class="tcard reveal" style="transition-delay:180ms"><div class="stars">✦</div><p>"A 2-year warranty and 30-day no-question returns on every piece. If it isn't right, we make it right."</p><div class="who">Backed By Us</div></div>
+      <div class="tcard reveal" style="transition-delay:180ms"><div class="stars">✦</div><p>"A 2-year warranty on every piece, with complimentary insured shipping worldwide. Quality you can trust."</p><div class="who">Backed By Us</div></div>
     </div>
   </div></section>
 
@@ -2080,11 +2080,11 @@ function viewProduct(id){
         <div class="pd-trust">
           <div>${ICONS.truck} Complimentary, insured worldwide shipping</div>
           <div>${ICONS.shield} Backed by a 2-year movement warranty</div>
-          <div>${ICONS.refresh} 30-day returns — wear it first, decide later</div>
+          <div>${ICONS.refresh} All sales final — choose confidently</div>
         </div>
         <div class="acc">
           <div class="acc-item open" data-acc><button class="acc-h">Specifications <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6" stroke-width="1.5"/></svg></button><div class="acc-body"><div class="acc-body-inner">${specs}</div></div></div>
-          <div class="acc-item" data-acc><button class="acc-h">Shipping &amp; Returns <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6" stroke-width="1.5"/></svg></button><div class="acc-body"><div class="acc-body-inner"><p class="muted" style="font-weight:300">Complimentary worldwide shipping, fully insured and tracked. Most orders dispatch within 1–2 business days and arrive in 5–9 days. Not in love? Return any unworn piece within 30 days for a full refund. See our <a href="/shipping-returns" style="border-bottom:1px solid">full policy</a>.</p></div></div></div>
+          <div class="acc-item" data-acc><button class="acc-h">Shipping &amp; Returns <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6" stroke-width="1.5"/></svg></button><div class="acc-body"><div class="acc-body-inner"><p class="muted" style="font-weight:300">Complimentary worldwide shipping, fully insured and tracked. Most orders dispatch within 1–2 business days and arrive in 5–9 days. All sales are final — please choose carefully. See our <a href="/shipping-returns" style="border-bottom:1px solid">full policy</a>.</p></div></div></div>
         </div>
       </div>
     </div>
@@ -2242,7 +2242,7 @@ function viewAbout(){
       <li class="reveal"><b>Wear it, don't insure it.</b> Our watches are made to live on your wrist, every day, without anxiety.</li>
     </ul>
     <h2 class="reveal">The craftsmanship</h2>
-    <p class="reveal">Every HOURLEIGH piece pairs a reliable Japanese quartz movement with stainless-steel construction, scratch-resistant crystals and considered detailing — fluted bezels, jubilee bracelets, mother-of-pearl and sunray dials. Each is backed by a two-year warranty and a 30-day return promise.</p>
+    <p class="reveal">Every HOURLEIGH piece pairs a reliable Japanese quartz movement with stainless-steel construction, scratch-resistant crystals and considered detailing — fluted bezels, jubilee bracelets, mother-of-pearl and sunray dials. Each is backed by a two-year warranty.</p>
     <div style="text-align:center;margin-top:44px" class="reveal"><a href="/shop" class="btn">Explore the Collection</a></div>
   </div></div></section>`;
 }
@@ -2251,7 +2251,7 @@ function viewPolicy(){
   return `<section class="page"><div class="wrap"><div class="prose">
     <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
     <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Shipping &amp; Returns</h1>
-    <p class="lede reveal">Everything you need to know before — and after — your order. Questions? <a href="mailto:hourleighwatches@gmail.com" style="border-bottom:1px solid">Reach our concierge</a>.</p>
+    <p class="lede reveal">Everything you need to know before — and after — your order. Questions? <a href="mailto:hello@hourleigh.com" style="border-bottom:1px solid">Reach our concierge</a>.</p>
     <div class="rule-gold reveal" style="margin:40px 0"></div>
     <h2 class="reveal">Shipping</h2>
     <ul>
@@ -2260,19 +2260,17 @@ function viewPolicy(){
       <li class="reveal">Estimated delivery: 5–9 business days, depending on destination.</li>
       <li class="reveal">A tracking link is emailed the moment your piece ships.</li>
     </ul>
-    <h2 class="reveal">Returns &amp; Exchanges</h2>
+    <h2 class="reveal">Sales Policy</h2>
     <ul>
-      <li class="reveal">30-day returns on any unworn piece in its original packaging.</li>
-      <li class="reveal">Begin a return any time via our returns portal or by emailing the concierge.</li>
-      <li class="reveal">Refunds are issued to your original payment method within 5–7 business days of receipt.</li>
-      <li class="reveal">Exchanges for a different model or dial are always welcome.</li>
+      <li class="reveal">All sales are final. We do not offer returns, refunds or exchanges.</li>
+      <li class="reveal">Please review product details, photos and specifications carefully before purchasing.</li>
+      <li class="reveal">If your order arrives damaged or defective, contact our concierge within 7 days and we will make it right.</li>
     </ul>
     <h2 class="reveal">Warranty</h2>
     <ul>
       <li class="reveal">Every HOURLEIGH timepiece is covered by a 2-year limited warranty on the movement and finish.</li>
       <li class="reveal">Battery replacement and routine wear are not covered, as is standard.</li>
     </ul>
-    <p class="reveal muted" style="margin-top:30px;font-size:.9rem">Note: This is placeholder policy copy for a demonstration storefront. Replace with your finalized legal policies before accepting real orders.</p>
     <div style="text-align:center;margin-top:36px" class="reveal"><a href="/shop" class="btn btn-ghost">Back to Shop</a></div>
   </div></div></section>`;
 }
@@ -2281,7 +2279,7 @@ function viewPrivacy(){
   return `<section class="page"><div class="wrap"><div class="prose">
     <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
     <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Privacy Policy</h1>
-    <p class="lede reveal">What we collect, why, and the choices you have. Questions? <a href="mailto:hourleighwatches@gmail.com" style="border-bottom:1px solid">Reach our concierge</a>.</p>
+    <p class="lede reveal">What we collect, why, and the choices you have. Questions? <a href="mailto:hello@hourleigh.com" style="border-bottom:1px solid">Reach our concierge</a>.</p>
     <div class="rule-gold reveal" style="margin:40px 0"></div>
     <h2 class="reveal">What we collect</h2>
     <ul>
@@ -2300,7 +2298,6 @@ function viewPrivacy(){
       <li class="reveal">Email us any time to access, correct or delete the personal data we hold about you.</li>
       <li class="reveal">Unsubscribe from marketing at any time via the link in any email.</li>
     </ul>
-    <p class="reveal muted" style="margin-top:30px;font-size:.9rem">Note: This is placeholder policy copy for a demonstration storefront. Have it finalized for your jurisdiction before accepting real orders.</p>
     <div style="text-align:center;margin-top:36px" class="reveal"><a href="/shop" class="btn btn-ghost">Back to Shop</a></div>
   </div></div></section>`;
 }
@@ -2330,7 +2327,6 @@ function viewTerms(){
     <ul>
       <li class="reveal">Our liability for any order is limited to the amount you paid for it.</li>
     </ul>
-    <p class="reveal muted" style="margin-top:30px;font-size:.9rem">Note: This is placeholder copy for a demonstration storefront. Have it finalized for your jurisdiction before accepting real orders.</p>
     <div style="text-align:center;margin-top:36px" class="reveal"><a href="/shop" class="btn btn-ghost">Back to Shop</a></div>
   </div></div></section>`;
 }
@@ -2349,7 +2345,7 @@ function viewFAQ(){
   return `<section class="page"><div class="wrap"><div class="prose">
     <span class="eyebrow reveal" style="display:block;text-align:center">Client Care</span>
     <h1 class="display reveal" style="font-size:clamp(2.2rem,5vw,3.6rem);margin:.2em 0 .5em;text-align:center">Questions, answered.</h1>
-    <p class="lede reveal">The honest answers to what people ask before they buy. Anything else? <a href="mailto:hourleighwatches@gmail.com" style="border-bottom:1px solid">Ask the concierge</a>.</p>
+    <p class="lede reveal">The honest answers to what people ask before they buy. Anything else? <a href="mailto:hello@hourleigh.com" style="border-bottom:1px solid">Ask the concierge</a>.</p>
     <div class="rule-gold reveal" style="margin:40px 0"></div>
     <div class="acc reveal">
       ${faqs.map(([q,a],i)=>`<div class="acc-item ${i===0?'open':''}" data-acc>
