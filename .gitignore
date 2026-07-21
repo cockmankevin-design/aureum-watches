@@ -17,3 +17,8 @@ _ghpreview.py
 
 # private marketing content (internal working files, not for the public repo)
 marketing/
+
+# Polymarket API credentials — never commit real keys
+polymarket/.env
+polymarket/.venv/
+__pycache__/
